@@ -8,9 +8,15 @@ public class Exercici0002 {
         Scanner scanner = new Scanner(System.in);
         Locale localeUS = Locale.US;
 
-        /*
-            TODO: Resol aquí l'exercici
-        */
+        System.out.print("Escriu el valor en Euros: ");
+        double euros = scanner.nextDouble();
+
+        System.out.print("Escriu la tasa de conversió (ex: 1.25): ");
+        double tasaConversion = scanner.nextDouble();
+
+        double dollars = euros * tasaConversion;
+        System.out.printf(localeUS, "El valor de %.2f€ són %.2f$%n", euros, dollars);
+
 
         scanner.close();
     }
