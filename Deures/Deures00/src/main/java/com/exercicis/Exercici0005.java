@@ -7,26 +7,27 @@ public class Exercici0005 {
         text = normalize(text);
 
         int UltLetra = text.length() - 1;
-        String invertido = "";
-        for (int cnt = UltLetra; cnt >= 0; cnt = cnt - 1) {
-            String letra = String.valueOf(text.charAt(cnt));
-            invertido = invertido + letra;
+        StringBuilder invertido = new StringBuilder();
+        for (int cnt = UltLetra; cnt >= 0; cnt--) {
+            char letra = text.charAt(cnt);
+            invertido.append(letra);
         }
-        return text.equals(invertido);
-    }   
+        return text.equals(invertido.toString());
+    }
 
     public static String normalize(String text) {
         String rst = text.toLowerCase();
 
+        // Añadimos un reemplazo explícito para el carácter "·"
         String[] accentos = {"à", "á", "è", "é", "í", "ò", "ó", "ú", "ù", " ", "'", "!", "\\.", ",", "·"};
         String[] sinAccentos = {"a", "a", "e", "e", "i", "o", "o", "u", "u", "", "", "", "", "", ""};
-        
+
         for (int cnt = 0; cnt < accentos.length; cnt++) {
             rst = rst.replaceAll(accentos[cnt], sinAccentos[cnt]);
         }
         return rst;
     }
-   
+
     public static void main(String[] args) {
         String[] ejemploStrings = {
             "Anul·la la lluna",
@@ -41,8 +42,9 @@ public class Exercici0005 {
             "Nu pop un"
         };
 
-        for (String str : ejemploStrings) {
-            System.out.printf("El text '%s' és %s\n", str, isPalindrom(str) ? "un palíndrom" : "no és un palíndrom");
+        for (String text : ejemploStrings) {
+            boolean esPalindrom = isPalindrom(text);
+            System.out.println(text + " (" + (esPalindrom ? "Si" : "No") + ")");
         }
     }
 }
