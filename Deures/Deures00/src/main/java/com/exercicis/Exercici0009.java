@@ -11,6 +11,12 @@ public class Exercici0009 {
         }
 
         System.out.println("*".repeat(ample));
+
+        for (int i = 0; i < alt - 2; i++) {
+            System.out.println("*" + "o".repeat(ample - 2) + "*");
+        }
+
+        System.out.println("*".repeat(ample));
     }
 
     public static void main(String[] args) {

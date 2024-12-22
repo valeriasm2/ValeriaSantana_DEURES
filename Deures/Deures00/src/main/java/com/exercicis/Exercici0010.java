@@ -45,18 +45,20 @@ public class Exercici0010 {
     }
 
     public static void main(String[] args) {
-
+        // Generar un ArrayList amb 10 enters aleatoris entre 0 i 99
         ArrayList<Integer> llistaAleatoria = generarNumerosAleatoris(10, 0, 99);
         System.out.println("Llista inicial: " + llistaAleatoria);
 
+        // Generar un ArrayList amb els números anteriors multiplicats per 2
         ArrayList<Integer> llistaMultiplicada = multiplicarPerDos(llistaAleatoria);
         System.out.println("Llista multiplicada per 2: " + llistaMultiplicada);
 
+        // Generar un ArrayList amb els números imparells de la primera llista
         ArrayList<Integer> llistaImparells = filtrarImparells(llistaAleatoria);
-        System.out.println("Llista d'imparells: " + llistaImparells);
+        System.out.println("Llista només amb números imparells: " + llistaImparells);
 
-        ArrayList<Double> llistaDividida = dividirPerDos(llistaAleatoria);
+        // Generar un ArrayList amb la divisió per 2 dels números imparells anteriors
+        ArrayList<Double> llistaDividida = dividirPerDos(llistaImparells);
         System.out.println("Llista imparells dividits per 2: " + llistaDividida);
-        
     }
 }
