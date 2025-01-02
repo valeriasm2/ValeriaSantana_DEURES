@@ -3,6 +3,7 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
@@ -114,7 +115,7 @@ public class Exercici0 {
             return false;
         }
         
-        return false;
+        return true;
     }
     
     /**
@@ -128,8 +129,11 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testValidarEdat"
      */
     public static boolean validarEdat(int edat) {
-        // TODO
-        return false;
+        if (edat < 18 || edat > 100) {
+            System.out.println("L'edat ha de ser un valor entre 18 i 100.");
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -150,8 +154,35 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testValidarFactors"
      */
     public static boolean validarFactors(String[] factors) {
-        // TODO
-        return false;
+        try (Scanner scanner = new Scanner(System.in)) {
+            System.out.print("Introdueix els factors (separats per espais): ");
+            String factorsInput = scanner.nextLine();
+            factors = factorsInput.split(" ");
+        }
+        if (factors.length != 2) {
+            System.out.println("Els factors han de ser exactament dos.");
+            return false;
+        }
+
+        String factor1 = factors[0];
+        String factor2 = factors[1];
+
+        if (!factor1.equals("autònom") && !factor1.equals("empresa")) {
+            System.out.println("El primer factor ha de ser 'autònom' o 'empresa'.");
+            return false;
+        }
+
+        if (!factor2.equals("risc alt") && !factor2.equals("risc mitjà") && !factor2.equals("risc baix")) {
+            System.out.println("El segon factor ha de ser 'risc alt', 'risc mitjà' o 'risc baix'.");
+            return false;
+        }
+
+        if (factor1.equals("autònom") && factor2.equals("risc baix")) {
+            System.out.println("Un autònom no pot tenir risc baix.");
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -170,7 +201,10 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testValidarDescompte"
      */
     public static boolean validarDescompte(double descompte) {
-        // TODO
+        if (descompte < 0 || descompte > 20) {
+            System.out.println("El descompte ha de ser un valor entre 0 i 20.");
+            return false;
+        }
         return false;
     }
 
@@ -195,9 +229,22 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testValidarTipusOperacio"
      */
     public static boolean validarTipusOperacio(String tipus) {
-        // TODO
-        return false;
+        if (tipus.equals("Declaració d'impostos") || 
+            tipus.equals("Gestió laboral") || 
+            tipus.equals("Assessoria fiscal") || 
+            tipus.equals("Constitució de societat") || 
+            tipus.equals("Modificació d'escriptures") || 
+            tipus.equals("Testament") || 
+            tipus.equals("Gestió d'herències") || 
+            tipus.equals("Acta notarial") || 
+            tipus.equals("Contracte de compravenda") || 
+            tipus.equals("Contracte de lloguer")) {
+            return true;  // El tipus d'operació és vàlid
+        } else {
+            return false;  // El tipus d'operació no és vàlid
+        }
     }
+    
 
     /**
      * Valida que la llista de clients sigui vàlida.
@@ -222,9 +269,29 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testValidarClients"
      */
     public static boolean validarClients(ArrayList<String> clientsLlista, ArrayList<String> clientsGlobals) {
-        // TODO
+    // llista buida és vàlida
+    if (clientsLlista.isEmpty()) {
+        return true;
+    }
+
+    // elements siguin únics
+    if (clientsLlista.size() != new HashSet<>(clientsLlista).size()) {
+        // Si la mida de la llista original és diferent de la mida de la llista sense duplicats, hi ha elements duplicats
+        System.out.println("Els clients han de ser únics.");
         return false;
     }
+
+    // tots els clients estan dins de la llista global de clients vàlids
+    for (String client : clientsLlista) {
+        if (!clientsGlobals.contains(client)) {
+            System.out.println("El client " + client + " no és vàlid.");
+            return false;
+        }
+    }
+
+    return true;
+    }
+
 
     /**
      * Comprova si una cadena conté només dígits.
