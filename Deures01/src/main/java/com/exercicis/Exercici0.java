@@ -74,6 +74,45 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testValidarNom"
      */
     public static boolean validarNom(String nom) {
+        try (Scanner scanner = new Scanner(System.in)) {
+            System.out.print("Introdueix el nom: ");
+            nom = scanner.nextLine();
+        }
+
+        if (nom.isEmpty() || nom.matches(".*\\d.*")) {
+            System.out.println("El nom no pot estar buit ni contenir números.");
+            return false;
+        }
+
+        int countLetters = 0;
+        for (char c : nom.toCharArray()) {
+            if (Character.isLetter(c)) {
+                countLetters++;
+            }
+        }
+
+        if (countLetters < 2) {
+            System.out.println("El nom ha de tenir com a mínim dues lletres.");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Valida si un factor és vàlid.
+     * Un factor és vàlid si és una cadena no buida i no conté números.
+     *
+     * @param factor El factor a validar.
+     * @return True si el factor és vàlid, false altrament.
+     *
+     * @test ./runTest.sh "com.exercicis.TestExercici0#testValidarFactor
+     */
+    public static boolean validarFactor(String factor) {
+        if (factor.isEmpty() || factor.matches(".*\\d.*")) {
+            System.out.println("El factor no pot estar buit ni contenir números.");
+            return false;
+        }
         
         return false;
     }
