@@ -75,48 +75,37 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testValidarNom"
      */
     public static boolean validarNom(String nom) {
-        try (Scanner scanner = new Scanner(System.in)) {
-            System.out.print("Introdueix el nom: ");
-            nom = scanner.nextLine();
+        // Comprobar que el nombre no esté vacío
+        if (nom == null || nom.trim().isEmpty()) {
+            System.out.println("El nom no pot estar buit.");
+            return false;  // Si el nombre es nulo o está vacío, no es válido
         }
-
-        if (nom.isEmpty() || nom.matches(".*\\d.*")) {
-            System.out.println("El nom no pot estar buit ni contenir números.");
-            return false;
+    
+        // Convertir el nombre a minúsculas para facilitar la comprobación
+        nom = nom.trim().toLowerCase(); 
+        
+        // Comprobar que el nombre no contenga números ni caracteres especiales
+        if (!nom.matches("[a-zàáèéìíòóùúäëïöüç ]+")) {
+            System.out.println("El nom no pot contenir números ni caràcters especials.");
+            return false;  // Si el nombre contiene caracteres no permitidos, no es válido
         }
-
+        
+        // Contar cuántas letras tiene el nombre
         int countLetters = 0;
         for (char c : nom.toCharArray()) {
             if (Character.isLetter(c)) {
-                countLetters++;
+                countLetters++;  // Incrementar el contador si el carácter es una letra
             }
         }
-
+    
+        // Comprobar que tenga al menos dos letras
         if (countLetters < 2) {
             System.out.println("El nom ha de tenir com a mínim dues lletres.");
-            return false;
+            return false;  // Si el nombre tiene menos de dos letras, no es válido
         }
-
-        return true;
-    }
-
-    /**
-     * Valida si un factor és vàlid.
-     * Un factor és vàlid si és una cadena no buida i no conté números.
-     *
-     * @param factor El factor a validar.
-     * @return True si el factor és vàlid, false altrament.
-     *
-     * @test ./runTest.sh "com.exercicis.TestExercici0#testValidarFactor
-     */
-    public static boolean validarFactor(String factor) {
-        if (factor.isEmpty() || factor.matches(".*\\d.*")) {
-            System.out.println("El factor no pot estar buit ni contenir números.");
-            return false;
-        }
-        
-        return true;
-    }
+    
+        return true;  // Si pasa todas las comprobaciones, el nombre es válido
+    }  
     
     /**
      * Valida que l'edat sigui un valor vàlid.
@@ -129,13 +118,14 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testValidarEdat"
      */
     public static boolean validarEdat(int edat) {
+        // Comprobar que la edad esté en el rango válido (18 a 100)
         if (edat < 18 || edat > 100) {
             System.out.println("L'edat ha de ser un valor entre 18 i 100.");
-            return false;
+            return false;  // Si la edad no está entre 18 y 100, no es válida
         }
-        return true;
+        return true;  // Si la edad está dentro del rango, se considera válida
     }
-
+    
     /**
      * Valida que els factors proporcionats siguin vàlids.
      * Comprova que:
@@ -154,37 +144,37 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testValidarFactors"
      */
     public static boolean validarFactors(String[] factors) {
-        try (Scanner scanner = new Scanner(System.in)) {
-            System.out.print("Introdueix els factors (separats per espais): ");
-            String factorsInput = scanner.nextLine();
-            factors = factorsInput.split(" ");
+        // Comprobar que los factores no sean nulos
+        if (factors == null || factors.length != 2) {
+            return false;  // Si no es un arreglo válido, devolver false
         }
-        if (factors.length != 2) {
-            System.out.println("Els factors han de ser exactament dos.");
-            return false;
-        }
-
+    
         String factor1 = factors[0];
         String factor2 = factors[1];
-
+    
+        // Comprobar si alguno de los factores es nulo
+        if (factor1 == null || factor2 == null) {
+            return false;  // Si algún factor es nulo, devolver false
+        }
+    
+        // El primer factor ha de ser "autònom" o "empresa"
         if (!factor1.equals("autònom") && !factor1.equals("empresa")) {
-            System.out.println("El primer factor ha de ser 'autònom' o 'empresa'.");
             return false;
         }
-
+    
+        // El segon factor ha de ser "risc alt", "risc mitjà" o "risc baix"
         if (!factor2.equals("risc alt") && !factor2.equals("risc mitjà") && !factor2.equals("risc baix")) {
-            System.out.println("El segon factor ha de ser 'risc alt', 'risc mitjà' o 'risc baix'.");
             return false;
         }
-
+    
+        // Si el primer factor es "autònom", no puede tener "risc baix"
         if (factor1.equals("autònom") && factor2.equals("risc baix")) {
-            System.out.println("Un autònom no pot tenir risc baix.");
             return false;
         }
-
-        return true;
+    
+        return true;  // Si todo es válido, retornar true
     }
-
+    
     /**
      * Valida que el descompte sigui un valor vàlid.
      * Comprova que:
@@ -201,13 +191,16 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testValidarDescompte"
      */
     public static boolean validarDescompte(double descompte) {
-        if (descompte < 0 || descompte > 20) {
+        // Validar que el descuento esté entre 0 y 20 (ambos incluidos)
+        if (descompte >= 0 && descompte <= 20) {
+            return true;  // Si el descuento está en el rango permitido, es válido
+        } else {
+            // Si el descuento no está en el rango permitido, mostrar un mensaje de error
             System.out.println("El descompte ha de ser un valor entre 0 i 20.");
-            return false;
+            return false;  // Si el descuento está fuera del rango, no es válido
         }
-        return false;
     }
-
+    
     /**
      * Valida que el tipus d'operació sigui vàlid.
      * Comprova que:
@@ -229,6 +222,12 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testValidarTipusOperacio"
      */
     public static boolean validarTipusOperacio(String tipus) {
+        // Comprobar si el tipo es null
+        if (tipus == null) {
+            return false;  // Si el tipo es null, no es válido
+        }
+    
+        // Comprobar si el tipo corresponde a uno de los valores válidos
         if (tipus.equals("Declaració d'impostos") || 
             tipus.equals("Gestió laboral") || 
             tipus.equals("Assessoria fiscal") || 
@@ -239,13 +238,12 @@ public class Exercici0 {
             tipus.equals("Acta notarial") || 
             tipus.equals("Contracte de compravenda") || 
             tipus.equals("Contracte de lloguer")) {
-            return true;  // El tipus d'operació és vàlid
+            return true;  // Si el tipo de operación es válido, devuelve true
         } else {
-            return false;  // El tipus d'operació no és vàlid
+            return false;  // Si el tipo de operación no es válido, devuelve false
         }
     }
     
-
     /**
      * Valida que la llista de clients sigui vàlida.
      * Comprova que:
@@ -269,30 +267,41 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testValidarClients"
      */
     public static boolean validarClients(ArrayList<String> clientsLlista, ArrayList<String> clientsGlobals) {
-    // llista buida és vàlida
-    if (clientsLlista.isEmpty()) {
+        // Comprobar si la lista de clientes proporcionada es nula
+        if (clientsLlista == null) {
+            return false;  // La lista de clientes no es válida si es nula
+        }
+    
+        // Comprobar si la lista global de clientes es nula
+        if (clientsGlobals == null) {
+            return false;  // La lista global no es válida si es nula
+        }
+    
+        // Si la lista de clientes está vacía, la validación es correcta
+        if (clientsLlista.isEmpty()) {
+            return true;
+        }
+    
+        // Comprobar que no haya clientes duplicados en la lista de clientes
+        for (int i = 0; i < clientsLlista.size(); i++) {
+            for (int j = i + 1; j < clientsLlista.size(); j++) {
+                if (clientsLlista.get(i).equals(clientsLlista.get(j))) {
+                    return false; // Si hay clientes duplicados, devolver false
+                }
+            }
+        }
+    
+        // Comprobar que todos los clientes de la lista estén en la lista global
+        for (String client : clientsLlista) {
+            if (!clientsGlobals.contains(client)) {
+                return false; // Si algún cliente no está en la lista global, devolver false
+            }
+        }
+    
+        // Si todas las comprobaciones son satisfactorias, devolver true
         return true;
     }
-
-    // elements siguin únics
-    if (clientsLlista.size() != new HashSet<>(clientsLlista).size()) {
-        // Si la mida de la llista original és diferent de la mida de la llista sense duplicats, hi ha elements duplicats
-        System.out.println("Els clients han de ser únics.");
-        return false;
-    }
-
-    // tots els clients estan dins de la llista global de clients vàlids
-    for (String client : clientsLlista) {
-        if (!clientsGlobals.contains(client)) {
-            System.out.println("El client " + client + " no és vàlid.");
-            return false;
-        }
-    }
-
-    return true;
-    }
-
-
+    
     /**
      * Comprova si una cadena conté només dígits.
      * 
@@ -302,9 +311,21 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testIsAllDigits"
      */
     public static boolean isAllDigits(String str) {
-        // TODO
-        return false;
-    }
+        // Comprobar si la cadena está vacía
+        if (str.isEmpty()) {
+            return false;
+        }
+    
+        // Iterar por cada carácter de la cadena
+        for (char c : str.toCharArray()) {
+            // Comprobar si el carácter no es un dígito
+            if (!Character.isDigit(c)) {
+                return false;
+            }
+        }
+        // Si todos los caracteres son dígitos, devolver true
+        return true;
+    } 
 
     /**
      * Valida que la data sigui en un format vàlid (AAAA-MM-DD) i que representi una data possible.
@@ -327,11 +348,56 @@ public class Exercici0 {
      *
      * @test ./runTest.sh "com.exercicis.TestExercici0#testValidarData"
      */
-    public static boolean validarData(String data) {
-        // TODO
-        return false;
+     public static boolean validarData(String data) {
+        // Comprobar que la fecha no sea nula y que tenga una longitud exacta de 10 caracteres
+        if (data == null || data.length() != 10) {
+            return false;
+        }
+    
+        // Verificar que los guiones estén en las posiciones correctas (índices 4 y 7)
+        if (data.charAt(4) != '-' || data.charAt(7) != '-') {
+            return false;
+        }
+    
+        // Extraer el año, mes y día de la cadena
+        String anyStr = data.substring(0, 4);
+        String mesStr = data.substring(5, 7);
+        String diaStr = data.substring(8, 10);
+    
+        // Comprobar que cada parte de la fecha (año, mes, día) contenga solo dígitos
+        if (!isAllDigits(anyStr) || !isAllDigits(mesStr) || !isAllDigits(diaStr)) {
+            return false;
+        }
+    
+        // Convertir las partes de la fecha a enteros
+        int any = Integer.parseInt(anyStr);
+        int mes = Integer.parseInt(mesStr);
+        int dia = Integer.parseInt(diaStr);
+    
+        // Comprobar que el año esté en el rango válido (entre 1000 y 9999)
+        if (any < 1000 || any > 9999) {
+            return false;
+        }
+    
+        if (mes < 1 || mes > 12) { // Comprobar que el mes esté dentro del rango válido (1-12)
+            return false;
+        }
+    
+        if (dia < 1 || dia > 31) { // Comprobar que el día esté en el rango válido (1-31)
+            return false;
+        }
+    
+        if ((mes == 4 || mes == 6 || mes == 9 || mes == 11) && dia > 30) { // Verificar que los meses con 30 días no tengan más de 30 días
+            return false;
+        }
+    
+        if (mes == 2 && dia > 29) { // Verificar que febrero no tenga más de 29 días (no se considera si el año es bisiesto)
+            return false;
+        }
+    
+        return true;
     }
-
+    
     /**
      * Valida que el preu sigui un número vàlid i superior a 100.
      * Comprova que:
@@ -349,8 +415,8 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testValidarPreu"
      */
     public static boolean validarPreu(double preu) {
-        // TODO
-        return false;
+        // Comprobar que el precio sea un número válido y mayor que 100
+        return preu > 100;
     }
 
     /**
@@ -363,10 +429,17 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testGeneraClauClient"
      */
     public static String generaClauClient() {
-        // TODO
-        return "";
+        Random random = new Random();
+    
+        String clau;
+        do {
+            int numeroAleatori = 100 + random.nextInt(900); // Generar número aleatorio entre 100 y 999
+            clau = "client_" + numeroAleatori;  // Crear la clave en formato "client_XYZ"
+        } while (clients.containsKey(clau)); // Comprobar si la clave ya existe
+    
+        return clau; // Retornar la clave generada
     }
-
+    
     /**
      * Afegeix un nou client al diccionari de clients.
      * - Genera una nova clau amb "generaClauClient"
@@ -386,8 +459,21 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testAfegirClient"
      */
     public static String afegirClient(String nom, int edat, ArrayList<String> factors, double descompte) {
-        // TODO
-        return "";
+        // Genera una clave única para el cliente
+        String clau = generaClauClient();
+
+        // Crea un HashMap con la información del cliente
+        HashMap<String, Object> clientData = new HashMap<>();
+        clientData.put("nom", nom);             // Nombre del cliente
+        clientData.put("edat", edat);           // Edad del cliente
+        clientData.put("factors", factors);     // Lista de factores asociados al cliente
+        clientData.put("descompte", descompte); // Descuento del cliente
+
+        // Añade la información del cliente al diccionario de clientes con la clave generada
+        clients.put(clau, clientData);
+
+        // Retorna la clave generada para el cliente añadido
+        return clau;
     }
 
     /**
@@ -411,8 +497,22 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testModificarClient"
      */
     public static String modificarClient(String clauClient, String camp, Object nouValor) {
-        // TODO
-        return "";
+        // Comprova si la clau del client existeix al diccionari de clients
+        if (!clients.containsKey(clauClient)) {
+            return "Client '" + clauClient + "' no existeix.";
+        }
+
+        // Obté el HashMap de dades del client
+        HashMap<String, Object> clientData = (HashMap<String, Object>) clients.get(clauClient);
+
+        // Comprova si el camp que es vol modificar existeix en el HashMap del client
+        if (!clientData.containsKey(camp)) {
+            return "El camp '" + camp + "' no existeix en aquest client.";
+        }
+
+        // Actualitza el valor del camp amb el nou valor
+        clientData.put(camp, nouValor);
+        return "OK";
     }
 
     /**
@@ -922,8 +1022,34 @@ Impostos:  21% (14.41)                     Total: 83.04
      * @param scanner L'objecte Scanner per llegir l'entrada de l'usuari.
      */
     public static void gestionaClientsOperacions(Scanner scanner) {
-        // TODO
+        // Ejemplo de interacción con el usuario
+        System.out.print("Introduce el nombre del cliente: ");
+        String nombre = scanner.nextLine();
+        if (!validarNom(nombre)) {
+            System.out.println("Nombre no válido.");
+            return; // Salir si el nombre no es válido
+        }
+    
+        // Pidiendo una fecha
+        System.out.print("Introduce una fecha (AAAA-MM-DD): ");
+        String fecha = scanner.nextLine();
+        if (!validarData(fecha)) {
+            System.out.println("Fecha no válida.");
+            return; // Salir si la fecha no es válida
+        }
+    
+        // Pidiendo la edad
+        System.out.print("Introduce la edad: ");
+        int edad = scanner.nextInt();
+        if (!validarEdat(edad)) {
+            System.out.println("Edad no válida.");
+            return; // Salir si la edad no es válida
+        }
+        
+        // Agregar más validaciones aquí si es necesario
+        System.out.println("Datos válidos. Procediendo con la operación.");
     }
+    
 
     /**
      * 
