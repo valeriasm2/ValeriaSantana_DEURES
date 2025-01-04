@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
@@ -497,24 +498,26 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testModificarClient"
      */
     public static String modificarClient(String clauClient, String camp, Object nouValor) {
-        // Comprova si la clau del client existeix al diccionari de clients
+        // Verificar si el cliente existe en el diccionario
         if (!clients.containsKey(clauClient)) {
-            return "Client '" + clauClient + "' no existeix.";
+            return "Client '" + clauClient + "' no existeix.";  // Si no existe, devolver mensaje
         }
-
-        // Obté el HashMap de dades del client
+    
+        // Obtener los datos del cliente (HashMap)
         HashMap<String, Object> clientData = (HashMap<String, Object>) clients.get(clauClient);
-
-        // Comprova si el camp que es vol modificar existeix en el HashMap del client
+    
+        // Verificar si el campo que se quiere modificar existe
         if (!clientData.containsKey(camp)) {
-            return "El camp '" + camp + "' no existeix en aquest client.";
+            return "El camp " + camp + " no existeix.";  // Si no existe, devolver mensaje
         }
-
-        // Actualitza el valor del camp amb el nou valor
+    
+        // Actualizar el valor del campo con el nuevo valor
         clientData.put(camp, nouValor);
+    
+        // Retornar OK si la modificación se realizó con éxito
         return "OK";
     }
-
+    
     /**
      * Esborra un client del diccionari de clients.
      * Comprova:
@@ -531,8 +534,22 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testEsborrarClient"
      */
     public static String esborrarClient(String clauClient) {
-        // TODO
-        return "";
+        // Verificar si el cliente existe en el diccionario
+        if (!clients.containsKey(clauClient)) {
+            return "Client '" + clauClient + "' no existeix.";  // Si no existe, devolver mensaje
+        }
+
+        // Eliminar el cliente
+        clients.remove(clauClient);
+
+        // Comprobar si el cliente fue eliminado correctamente
+        if (!clients.containsKey(clauClient)) {
+            // El cliente se eliminó correctamente
+            return "OK";
+        } else {
+            // El cliente no se eliminó correctamente
+            return "Error en eliminar el client.";
+        }
     }
 
     /**
@@ -548,11 +565,51 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testLlistarClients"
      */
     public static ArrayList<HashMap<String, HashMap<String, Object>>> llistarClients(
-            ArrayList<String> claus,
-            HashMap<String, Object> condicions) {
-        
-        // TODO
-        return null;
+        ArrayList<String> claus,
+        HashMap<String, Object> condicions) {
+    
+        // Inicialitzem una llista per emmagatzemar els clients que compleixen les condicions.
+        ArrayList<HashMap<String, HashMap<String, Object>>> resultat = new ArrayList<>();
+
+        // Recorrer totes les claus de clients per comprovar qui compleix les condicions
+        for (String clau : clients.keySet()) {
+
+            // Si la clau del client no es troba a la llista de claus donada, continuar al següent client
+            if (!claus.contains(clau)) {
+                continue;  // saltar a la següent iteració
+            }
+
+            // Obtenir les dades del client actual
+            HashMap<String, Object> datos = clients.get(clau);
+
+            // Variable per controlar si el client compleix les condicions
+            boolean coincidencia = true;
+
+            // Comprovem si el client compleix totes les condicions
+            for (String key : condicions.keySet()) {
+                // Obtenim el valor esperat per la condició
+                Object valorEsperado = condicions.get(key);
+
+                // Si el client no té la clau o el valor no coincideix amb el valor esperat, no compleix
+                if (!datos.containsKey(key) || !datos.get(key).equals(valorEsperado)) {
+                    coincidencia = false;  // marquem que el client no compleix les condicions
+                    break;  // sortim del bucle de condicions
+                }
+            }
+
+            // Si el client compleix totes les condicions, afegim les dades a la llista de resultats
+            if (coincidencia) {
+                // Creem un diccionari per emmagatzemar les dades del client
+                HashMap<String, HashMap<String, Object>> clientValido = new HashMap<>();
+                clientValido.put(clau, datos);  // afegim la clau i les dades del client
+
+                // Afegim el client a la llista de resultats
+                resultat.add(clientValido);
+            }
+        }
+
+        // Retornem la llista de clients que compleixen les condicions
+        return resultat;
     }
 
     /**
@@ -565,8 +622,29 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testGeneraClauOperacio"
      */
     public static String generaClauOperacio() {
-        // TODO
-        return "";
+        Random random = new Random(); // Instanciamos el generador de números aleatorios
+        String clave; // La variable donde almacenaremos la clave generada
+    
+        boolean existeix; // Variable para comprobar si la clave ya existe en la lista de operaciones
+        do {
+            // Genera un número aleatorio entre 100 y 999
+            int numeroAleatorio = 100 + random.nextInt(900);
+            clave = "operacio_" + numeroAleatorio; // Formamos la clave concatenando el prefijo con el número aleatorio generado
+    
+            // Comprobamos si la clave ya existe en la lista de operaciones
+            existeix = false;
+
+            for (HashMap<String, Object> operacion : operacions) {
+                // Recorremos la lista de operaciones y comprobamos si alguna tiene la clave generada
+                if (clave.equals(operacion.get("id"))) {
+                    existeix = true; // Si la clave existe, cambiamos el valor de 'existeix' a true
+                    break; // Si encontramos una coincidencia, salimos del bucle
+                }
+            }
+        } while (existeix); // Si la clave ya existe, el bucle se repite para generar una nueva
+    
+        // Una vez obtenida una clave única, la retornamos
+        return clave;
     }
 
     /**
@@ -591,14 +669,34 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testAfegirOperacio"
      */
     public static String afegirOperacio(
-            String tipus,
-            ArrayList<String> clientsImplicats,
-            String data,
-            String observacions,
-            double preu) {
+        String tipus,
+        ArrayList<String> clientsImplicats,
+        String data,
+        String observacions,
+        double preu) {
 
-        // TODO
-        return "";
+        // Genera una clave única para la operación
+        String clauOperacio = generaClauOperacio();
+
+        // Depuración: Imprime la clave generada
+        System.out.println("Generada la clave de operación: " + clauOperacio);
+
+        // Creamos un HashMap para representar la nueva operación
+        HashMap<String, Object> novaOperacio = new HashMap<>();
+        novaOperacio.put("id", clauOperacio);
+        novaOperacio.put("tipus", tipus);
+        novaOperacio.put("clients", clientsImplicats);
+        novaOperacio.put("data", data);
+        novaOperacio.put("observacions", observacions);
+        novaOperacio.put("preu", preu);
+
+        // Añadimos la nueva operación a la lista de operaciones
+        operacions.add(novaOperacio);
+
+        // Depuración: Imprime el tamaño de la lista de operaciones
+        System.out.println("Número de operaciones después de añadir: " + operacions.size());
+
+        return clauOperacio;
     }
 
     /**
@@ -613,8 +711,21 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testModificarOperacio"
      */
     public static String modificarOperacio(String idOperacio, String camp, Object nouValor) {
-        // TODO
-        return "";
+        // Iteramos sobre cada operación de la lista
+        for (HashMap<String, Object> operacio : operacions) {
+            // Comprobamos si la operación coincide con la clave especificada
+            if (operacio.get("id").equals(idOperacio)) {
+                // Comprobamos si el campo existe dentro de la operación
+                if (operacio.containsKey(camp)) {
+                    // Modificamos el valor del campo
+                    operacio.put(camp, nouValor);
+                    return "OK"; 
+                } else {
+                    return "El camp " + camp + " no existeix en l'operació.";
+                }
+            }
+        }
+        return "Operació amb id " + idOperacio + " no existeix.";
     }
 
     /**
@@ -626,18 +737,31 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testEsborrarOperacio"
      */
     public static String esborrarOperacio(String idOperacio) {
-        // TODO
-        return "";
+        // Iteramos sobre la lista de operaciones utilizando un índice
+        for (int i = 0; i < operacions.size(); i++) {
+            // Obtenemos la operación en la posición actual
+            HashMap<String, Object> operacio = operacions.get(i);
+    
+            // Comprobamos si el 'id' de la operación coincide con el proporcionado
+            if (operacio.get("id").equals(idOperacio)) {
+                // Si encontramos la operación, la eliminamos de la lista
+                operacions.remove(i);
+                return "OK"; // Retornamos OK si la operación se ha eliminado correctamente
+            }
+        }
+    
+        // Si no se encuentra la operación, retornamos un mensaje de error
+        return "Operació amb id " + idOperacio + " no existeix.";
     }
 
     /**
-     * Llista les operacions que compleixen determinats criteris basats 
-     * en identificadors i condicions específiques.
+     * Lista las operaciones que cumplen ciertos criterios basados
+     * en identificadores y condiciones específicas.
      * 
-     * @param ids Una llista d'identificadors d'operacions que es volen considerar. 
-     *            Si està buida, es consideren totes les operacions.
-     * @param condicions Un HashMap amb les condicions que les operacions han de complir.
-     * @return Una llista amb les operacions que compleixen les condicions.
+     * @param ids Una lista de identificadores de operaciones que se desean considerar. 
+     *            Si está vacía, se consideran todas las operaciones.
+     * @param condicions Un HashMap con las condiciones que las operaciones deben cumplir.
+     * @return Una lista con las operaciones que cumplen las condiciones.
      * 
      * @test ./runTest.sh "com.exercicis.TestExercici0#testLlistarOperacions"
      */
@@ -645,9 +769,44 @@ public class Exercici0 {
             ArrayList<String> ids,
             HashMap<String, Object> condicions) {
 
-        // TODO
-        return null;
+        // Lista para almacenar las operaciones que cumplen las condiciones
+        ArrayList<HashMap<String, Object>> opCorrectas = new ArrayList<>();
+
+        // Si la lista de ids no es vacía, filtramos solo las operaciones que tengan esos ids
+        boolean considerarTodos = (ids == null || ids.isEmpty());
+
+        // Iteramos sobre todas las operaciones
+        for (HashMap<String, Object> operacio : operacions) {
+
+            // Si no estamos considerando todos los ids y el id de la operación no está en la lista, la saltamos
+            if (!considerarTodos && !ids.contains(operacio.get("id"))) {
+                continue;
+            }
+
+            boolean coincideix = true;
+
+            // Si hay condiciones, las verificamos
+            if (condicions != null && !condicions.isEmpty()) {
+                // Iteramos sobre las condiciones utilizando Map.Entry para acceder a la clave y al valor
+                for (Map.Entry<String, Object> entry : condicions.entrySet()) {
+                    // Si la operación no contiene la clave o el valor no coincide, la descartamos
+                    if (!operacio.containsKey(entry.getKey()) || !operacio.get(entry.getKey()).equals(entry.getValue())) {
+                        coincideix = false;
+                        break;
+                    }
+                }
+            }
+
+            // Si la operación cumple todas las condiciones, la agregamos a la lista de resultados
+            if (coincideix) {
+                opCorrectas.add(operacio);
+            }
+        }
+
+        // Devolvemos la lista con las operaciones que cumplen las condiciones
+        return opCorrectas;
     }
+
 
     /**
      * Llista les operacions associades a un client específic basant-se en la seva clau.
