@@ -2,6 +2,7 @@ package com.exercicis;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -807,7 +808,6 @@ public class Exercici0 {
         return opCorrectas;
     }
 
-
     /**
      * Llista les operacions associades a un client específic basant-se en la seva clau.
      * 
@@ -817,8 +817,23 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testLlistarOperacionsClient"
      */
     public static ArrayList<HashMap<String, Object>> llistarOperacionsClient(String clauClient) {
-        // TODO
-        return null;
+        // Lista para almacenar las operaciones asociadas al cliente
+        ArrayList<HashMap<String, Object>> operacionsClient = new ArrayList<>();
+        
+        // Iterar sobre todas las operaciones
+        for (HashMap<String, Object> operacio : operacions) {
+            // Verificar si la clave del cliente de la operación no es nula antes de compararla
+            if (operacio.get("client") != null && operacio.get("client").equals(clauClient)) {
+                operacionsClient.add(operacio); // Si coincide, agregar la operación a la lista
+            }
+
+            ArrayList<String> clients = (ArrayList<String>) operacio.get("clients");// Obtener la lista de clientes de la operación
+            // Verificar si la lista de clientes no es nula y contiene la clave del cliente
+            if (clients != null && clients.contains(clauClient)) {
+                operacionsClient.add(operacio); // Si la lista contiene la clave del cliente, agregar la operación a la lista
+            }
+        }
+        return operacionsClient;
     }
 
     /**
@@ -846,8 +861,34 @@ public class Exercici0 {
      * @test ./runTest.sh "com.exercicis.TestExercici0#testAlineaColumnes"
      */
     public static String alineaColumnes(ArrayList<Object[]> columnes) {
-        // TODO
-        return "";
+        String resultat = "";
+        for (Object[] columna : columnes) {
+            String text = (String) columna[0];
+            String alineacio = (String) columna[1];
+            int amplada = (int) columna[2];
+            
+            // Si el text és més llarg que l'amplada, trunca el text
+            if (text.length() > amplada) {
+                text = text.substring(0, amplada);
+            }
+    
+            // Calcula la quantitat d'espais necessaris
+            int espais = amplada - text.length();
+    
+            if (alineacio.equals("left")) {
+                // Alinea a l'esquerra i afegeix espais a la dreta
+                resultat += text + " ".repeat(espais);
+            } else if (alineacio.equals("right")) {
+                // Alinea a la dreta i afegeix espais a l'esquerra
+                resultat += " ".repeat(espais) + text;
+            } else if (alineacio.equals("center")) {
+                // Alinea al centre, distribuint els espais de manera uniforme
+                int espaisEsquerra = espais / 2;
+                int espaisDreta = espais - espaisEsquerra; // Si els espais són imparells, afegeix 1 a la dreta
+                resultat += " ".repeat(espaisEsquerra) + text + " ".repeat(espaisDreta);
+            }
+        }
+        return resultat;
     }
 
     /**
@@ -901,9 +942,10 @@ Impostos:  21% (14.41)                     Total: 83.04
      * @test ./runTest.sh "com.exercicis.TestExercici0#testTaulaOperacionsClient2"
      */
     public static ArrayList<String> taulaOperacionsClient(String clauClient, String ordre) {
-        // TODO
-        return null;
+    return"";
     }
+
+
 
     /**
      * Genera el menú principal de l'aplicació de Gestió de Notaria.
@@ -916,6 +958,7 @@ Impostos:  21% (14.41)                     Total: 83.04
      * @test ./runTest.sh "com.exercicis.TestExercici0#testGetCadenesMenu"
      */
     public static ArrayList<String> getCadenesMenu() {
+        // Define the menu text as a multiline string.
         String menuText = """
 === Menú de Gestió de Notaria ===
 1. Afegir client
@@ -927,10 +970,13 @@ Impostos:  21% (14.41)                     Total: 83.04
 7. Esborrar operació
 8. Llistar operacions
 0. Sortir
-            """;
-        String[] lines = menuText.split("\\R");
-        return new ArrayList<>(Arrays.asList(lines));
+""";
+String[] lines = menuText.split("\\R");
+return new ArrayList<>(Arrays.asList(lines));  // Convertir a ArrayList
+
+
     }
+    
 
     /**
      * Genera el menú amb la llista de clients.
