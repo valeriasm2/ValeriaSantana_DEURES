@@ -87,7 +87,18 @@ public class Exercici1 {
      * @test ./runTest.sh "com.exercicis.TestExercici1#testPrintBoardWithLargeNumbers"
      */
     public static void printBoard() {
-        // TODO
+        System.out.println("+----+----+----+----+");
+        for (int[] row : board) {
+            for (int cell : row) {
+                if (cell == 0) {
+                    System.out.printf("|    ");
+                } else {
+                    System.out.printf("|%4d", cell);
+                }
+            }
+            System.out.println("|");
+            System.out.println("+----+----+----+----+");
+        }
     }
 
     /**
@@ -102,7 +113,13 @@ public class Exercici1 {
      * @test ./runTest.sh "com.exercicis.TestExercici1#testSpawnDoNotOverwriteExisting"
      */
     public static void spawnTile() {
-        // TODO
+        int x, y;
+        do {
+            x = random.nextInt(SIZE);
+            y = random.nextInt(SIZE);
+        } while (board[x][y] != 0);
+
+        board[x][y] = random.nextInt(10) == 0 ? 4 : 2;
     }
 
     /**
@@ -140,7 +157,35 @@ public class Exercici1 {
      * @test ./runTest.sh "com.exercicis.TestExercici1#testMoveLeftFullRowWithoutMerge"
      */
     public static void moveLeft() {
-        // TODO
+        for (int row = 0; row < SIZE; row++) {
+            int[] newRow = new int[SIZE];
+            int newIndex = 0;
+            
+            for (int col = 0; col < SIZE; col++) {
+                if (board[row][col] != 0) {
+                    newRow[newIndex] = board[row][col];
+                    newIndex++;
+                }
+            }
+            
+            for (int i = 0; i < SIZE - 1; i++) {
+                if (newRow[i] != 0 && newRow[i] == newRow[i + 1]) {
+                    newRow[i] *= 2;
+                    newRow[i + 1] = 0;
+                }
+            }
+            
+            int[] finalRow = new int[SIZE];
+            int finalIndex = 0;
+            for (int i = 0; i < SIZE; i++) {
+                if (newRow[i] != 0) {
+                    finalRow[finalIndex] = newRow[i];
+                    finalIndex++;
+                }
+            }
+            
+            board[row] = finalRow;
+        }
     }
 
     /**
@@ -178,7 +223,35 @@ public class Exercici1 {
      * @test ./runTest.sh "com.exercicis.TestExercici1#testMoveRightFullColumnWithoutMerge"
      */
     public static void moveRight() {
-        // TODO
+        for (int row = 0; row < SIZE; row++) {
+            int[] newRow = new int[SIZE];
+            int newIndex = SIZE - 1;
+            
+            for (int col = SIZE - 1; col >= 0; col--) {
+                if (board[row][col] != 0) {
+                    newRow[newIndex] = board[row][col];
+                    newIndex--;
+                }
+            }
+            
+            for (int i = SIZE - 1; i > 0; i--) {
+                if (newRow[i] != 0 && newRow[i] == newRow[i - 1]) {
+                    newRow[i] *= 2;
+                    newRow[i - 1] = 0;
+                }
+            }
+            
+            int[] finalRow = new int[SIZE];
+            int finalIndex = SIZE - 1;
+            for (int i = SIZE - 1; i >= 0; i--) {
+                if (newRow[i] != 0) {
+                    finalRow[finalIndex] = newRow[i];
+                    finalIndex--;
+                }
+            }
+            
+            board[row] = finalRow;
+        }
     }
 
     /**
@@ -216,7 +289,37 @@ public class Exercici1 {
      * @test ./runTest.sh "com.exercicis.TestExercici1#testMoveUpFullColumnWithoutMerge"
      */
     public static void moveUp() {
-        // TODO
+        for (int col = 0; col < SIZE; col++) {
+            int[] newCol = new int[SIZE];
+            int newIndex = 0;
+            
+            for (int row = 0; row < SIZE; row++) {
+                if (board[row][col] != 0) {
+                    newCol[newIndex] = board[row][col];
+                    newIndex++;
+                }
+            }
+            
+            for (int i = 0; i < SIZE - 1; i++) {
+                if (newCol[i] != 0 && newCol[i] == newCol[i + 1]) {
+                    newCol[i] *= 2;
+                    newCol[i + 1] = 0;
+                }
+            }
+            
+            int[] finalCol = new int[SIZE];
+            int finalIndex = 0;
+            for (int i = 0; i < SIZE; i++) {
+                if (newCol[i] != 0) {
+                    finalCol[finalIndex] = newCol[i];
+                    finalIndex++;
+                }
+            }
+            
+            for (int row = 0; row < SIZE; row++) {
+                board[row][col] = finalCol[row];
+            }
+        }
     }
 
     /**
@@ -254,7 +357,37 @@ public class Exercici1 {
      * @test ./runTest.sh "com.exercicis.TestExercici1#testMoveDownFullColumnWithoutMerge"
      */
     public static void moveDown() {
-        // TODO
+        for (int col = 0; col < SIZE; col++) {
+            int[] newCol = new int[SIZE];
+            int newIndex = SIZE - 1;
+    
+            for (int row = SIZE - 1; row >= 0; row--) {
+                if (board[row][col] != 0) {
+                    newCol[newIndex] = board[row][col];
+                    newIndex--;
+                }
+            }
+    
+            for (int i = SIZE - 1; i > 0; i--) {
+                if (newCol[i] != 0 && newCol[i] == newCol[i - 1]) {
+                    newCol[i] *= 2;
+                    newCol[i - 1] = 0;
+                }
+            }
+    
+            int[] finalCol = new int[SIZE];
+            int finalIndex = SIZE - 1;
+            for (int i = SIZE - 1; i >= 0; i--) {
+                if (newCol[i] != 0) {
+                    finalCol[finalIndex] = newCol[i];
+                    finalIndex--;
+                }
+            }
+    
+            for (int row = 0; row < SIZE; row++) {
+                board[row][col] = finalCol[row];
+            }
+        }
     }
 
     /**
@@ -274,10 +407,40 @@ public class Exercici1 {
      * @test ./runTest.sh "com.exercicis.TestExercici1#testGameContinueWithMultipleConditions"
      * @test ./runTest.sh "com.exercicis.TestExercici1#testGameWinWithMultipleConditions"
      */
-    public static String isGameFinished() {
-        // TODO
-        return "continue";
+    public static boolean isGameFinished() {
+        // Verificar si alguien ha ganado
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                if (board[row][col] >= 128) {
+                    System.out.println("¡Has ganado!");
+                    return true;
+                }
+            }
+        }
+    
+        // Verificar si quedan movimientos válidos
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                // Comprobar si hay casillas vacías
+                if (board[row][col] == 0) {
+                    return false;
+                }
+    
+                // Comprobar si se pueden combinar fichas adyacentes
+                if (col < SIZE - 1 && board[row][col] == board[row][col + 1]) {
+                    return false;
+                }
+                if (row < SIZE - 1 && board[row][col] == board[row + 1][col]) {
+                    return false;
+                }
+            }
+        }
+    
+        System.out.println("¡Juego terminado! No hay más movimientos posibles.");
+        return true;
     }
+    
+    
 
     /**
      * Gestiona el bucle principal del joc:
@@ -307,8 +470,48 @@ public class Exercici1 {
      * @test ./runTest.sh "com.exercicis.TestExercici1#testPlayMixedCaseCommands"
      */
     public static void play(Scanner scanner) {
-        // TODO
+        // Inicializar el tablero con dos fichas
+        spawnTile();
+        spawnTile();
+    
+        // Bucle principal del juego
+        while (true) {
+            clearScreen();
+            printBoard();
+    
+            // Verificar si el juego ha terminado
+            if (isGameFinished()) {
+                break;
+            }
+    
+            // Solicitar al jugador un movimiento
+            System.out.print("Introduce un movimiento (izquierda, derecha, arriba, abajo): ");
+            String move = scanner.nextLine().toLowerCase();
+    
+            // Ejecutar el movimiento correspondiente
+            switch (move) {
+                case "izquierda":
+                    moveLeft();
+                    break;
+                case "derecha":
+                    moveRight();
+                    break;
+                case "arriba":
+                    moveUp();
+                    break;
+                case "abajo":
+                    moveDown();
+                    break;
+                default:
+                    System.out.println("Movimiento no válido. Intenta de nuevo.");
+                    continue;
+            }
+    
+            // Generar una nueva ficha después de cada movimiento
+            spawnTile();
+        }
     }
+    
 
     /**
      * 
@@ -317,7 +520,7 @@ public class Exercici1 {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         play(scanner);
-        scanner.close();
     }
+    
 }
 
