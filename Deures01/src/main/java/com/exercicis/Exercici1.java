@@ -87,19 +87,19 @@ public class Exercici1 {
      * @test ./runTest.sh "com.exercicis.TestExercici1#testPrintBoardWithLargeNumbers"
      */
     public static void printBoard() {
-        System.out.println("+----+----+----+----+");
+        String border = "+----+----+----+----+";
+        
+        System.out.println(border);
+        
         for (int[] row : board) {
             for (int cell : row) {
-                if (cell == 0) {
-                    System.out.printf("|    ");
-                } else {
-                    System.out.printf("|%4d", cell);
-                }
+                System.out.printf("|%4s", (cell == 0 ? "    " : String.format("%d", cell)));
             }
             System.out.println("|");
-            System.out.println("+----+----+----+----+");
+            System.out.println(border);
         }
     }
+
 
     /**
      * Genera una nova fitxa en una posició

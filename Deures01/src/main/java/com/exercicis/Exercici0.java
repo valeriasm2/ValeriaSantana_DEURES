@@ -517,10 +517,9 @@ public class Exercici0 {
     
         boolean existeix;
         do {
-            int numeroAleatori = 100 + random.nextInt(900); // Genera un número entre 100 i 999
+            int numeroAleatori = 100 + random.nextInt(900); // num entre 100 i 999
             clau = "operacio_" + numeroAleatori;
     
-            // Comprova si la clau ja existeix a la llista d'operacions
             existeix = false;
             for (HashMap<String, Object> operacio : operacions) {
                 if (clau.equals(operacio.get("id"))) {
@@ -610,7 +609,9 @@ public class Exercici0 {
      */
     public static String esborrarOperacio(String idOperacio) {
         for (int i = 0; i < operacions.size(); i++) {
+
             HashMap<String, Object> operacio = operacions.get(i);
+
             if (operacio.get("id").equals(idOperacio)) {
                 operacions.remove(i);
                 return "OK";
@@ -637,14 +638,12 @@ public class Exercici0 {
         ArrayList<HashMap<String, Object>> resultat = new ArrayList<>();
 
         for (HashMap<String, Object> operacio : operacions) {
-            // Si hi ha una llista d'ids i l'operació no està a la llista, passa a la següent
+
             if (ids != null && !ids.isEmpty() && !ids.contains(operacio.get("id"))) {
                 continue;
             }
 
             boolean coincideix = true;
-
-            // Comprova si totes les condicions es compleixen
             if (condicions != null && !condicions.isEmpty()) {
                 for (String key : condicions.keySet()) {
                     if (!operacio.containsKey(key) || !operacio.get(key).equals(condicions.get(key))) {
@@ -653,8 +652,6 @@ public class Exercici0 {
                     }
                 }
             }
-
-            // Si l'operació compleix les condicions, afegeix-la al resultat
             if (coincideix) {
                 resultat.add(operacio);
             }
@@ -995,7 +992,6 @@ Impostos:  21% (14.41)                     Total: 83.04
                     return menu.get(index).substring(3).trim();
                 }
             } catch (NumberFormatException e) {
-                // Si no és un número, continuem amb la comprovació de paraula clau
             }
             
             // Comprova si és una paraula clau
