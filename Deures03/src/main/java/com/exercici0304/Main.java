@@ -9,7 +9,7 @@ public class Main {
 
         /*
         TODO Modifica el codi de NumComplex.java 
-        per tal que funcioni aquest main
+        per tal que funcioni aquest main         */
 
         try {
             NumComplex num1 = new NumComplex(3, 4);
@@ -39,6 +39,6 @@ public class Main {
         } finally {
             Locale.setDefault(defaultLocale);
         }
-        */
+
     }
 }
