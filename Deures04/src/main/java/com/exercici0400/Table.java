@@ -23,8 +23,23 @@ public class Table extends Component {
         // Afegir linia buida al principi
         rst.add(0, " ".repeat(width)); 
 
+        String capcelera = "";
+        for (int cnt = 0; cnt<headers.size();cnt++) {
+            String header = headers.get(cnt);
+            int width = widths.get(cnt);
+            if ((headers.get(cnt)).length() < width){
+                capcelera += " ".repeat(width);
+            }
+            capcelera = capcelera +header;
+
+            if (cnt<(headers.size()-1)){
+                capcelera = capcelera +"|";
+            }
+        }
+        rst.add(1, " " + capcelera + " ");
+
         // Asignar text segons alineació 
-        for (int i = 1; i < height; i++) {
+        for (int i = 2; i < height; i++) {
             rst.add(i, "x".repeat(width));
         }
         return rst;
