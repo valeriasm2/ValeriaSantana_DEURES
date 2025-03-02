@@ -1,0 +1,61 @@
+[
+    {
+        "nom": "Oceà Pacífic",
+        "tipus": "oceà",
+        "profunditat_max_m": 10924,
+        "superficie_km2": 1.68723E8,
+        "caracteristiques": [
+            "És l'oceà més gran del món",
+            "Conté la fossa de les Marianes, la més profunda del món",
+            "Conté una illa de plàstics contaminants."
+        ]
+    },
+    {
+        "nom": "Oceà Atlàntic",
+        "tipus": "oceà",
+        "profunditat_max_m": 8486,
+        "superficie_km2": 8.5133E7,
+        "caracteristiques": [
+            "Separa Amèrica d'Europa i Àfrica",
+            "Conté el famós Triangle de les Bermudes"
+        ]
+    },
+    {
+        "nom": "Oceà Índic",
+        "tipus": "oceà",
+        "profunditat_max_m": 7450,
+        "superficie_km2": 7.056E7,
+        "caracteristiques": []
+    },
+    {
+        "nom": "Oceà Àrtic",
+        "tipus": "oceà",
+        "profunditat_max_m": 5450,
+        "superficie_km2": 1.5558E7,
+        "caracteristiques": []
+    },
+    {
+        "nom": "Mar Mediterrani",
+        "tipus": "mar",
+        "profunditat_max_m": 5121,
+        "superficie_km2": 2500000,
+        "caracteristiques": [
+            "És un mar gairebé tancat",
+            "Connecta amb l'oceà Atlàntic a través de l'estret de Gibraltar"
+        ]
+    },
+    {
+        "nom": "Mar Carib",
+        "tipus": "mar",
+        "profunditat_max_m": 7686,
+        "superficie_km2": 2754000,
+        "caracteristiques": []
+    },
+    {
+        "nom": "Mar de la Xina Meridional",
+        "tipus": "mar",
+        "profunditat_max_m": 5560,
+        "superficie_km2": 3500000,
+        "caracteristiques": []
+    }
+]
