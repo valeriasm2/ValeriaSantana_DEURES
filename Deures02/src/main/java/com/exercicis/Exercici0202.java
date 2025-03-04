@@ -110,9 +110,63 @@ public class Exercici0202 {
         }
         return rst;
     }
-    
-    
-    
+
+    // Método para convertir el JSON de planetes a un ArrayList
+    public static ArrayList<HashMap<String, Object>> JSONPlanetesToArrayList(String filePath) {
+        ArrayList<HashMap<String, Object>> rst = new ArrayList<>();
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(filePath)));
+
+            // Parsear el JSON como un objeto
+            JSONObject jsonObject = new JSONObject(content);
+
+            // Obtener el arreglo de planetas desde la clave "planetes"
+            JSONArray planetesArray = jsonObject.getJSONArray("planetes");
+
+            // Iterar sobre cada planeta y agregar los datos al ArrayList
+            for (int i = 0; i < planetesArray.length(); i++) {
+                JSONObject planetaObject = planetesArray.getJSONObject(i);
+                HashMap<String, Object> planetaMap = new HashMap<>();
+                planetaMap.put("nom", planetaObject.getString("nom"));
+                planetaMap.put("diametre", planetaObject.getDouble("diametre"));
+                planetaMap.put("distancia_sol", planetaObject.getDouble("distancia_sol"));
+                rst.add(planetaMap);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rst;
+    }
+
+    // Método para mostrar los planetas ordenados
+    public static void mostrarPlanetesOrdenats(String filePath, String tipusOrdenacio) {
+        ArrayList<HashMap<String, Object>> planetes = JSONPlanetesToArrayList(filePath);
+
+        if (!tipusOrdenacio.equals("diametre") && !tipusOrdenacio.equals("distancia_sol")) {
+            throw new IllegalArgumentException("Tipus d'ordenació invàlid: " + tipusOrdenacio + ". Tipus vàlids: 'diametre' o 'distancia_sol'.");
+        }
+
+        planetes.sort((planeta0, planeta1) -> {
+            Double a = (Double) planeta0.get(tipusOrdenacio);
+            Double b = (Double) planeta1.get(tipusOrdenacio);
+            return a.compareTo(b);
+        });
+
+        String capitalizedOrdenacio = tipusOrdenacio.substring(0, 1).toUpperCase() + tipusOrdenacio.substring(1).toLowerCase();
+
+        System.out.println("┌──────────────────────┬────────────┬────────────┐");
+        System.out.println("│ Nom                  │ Diametre   │ Distància Sol │");
+        System.out.println("├──────────────────────┼────────────┼────────────┤");
+
+        for (HashMap<String, Object> planeta : planetes) {
+            String nom = (String) planeta.get("nom");
+            double diametre = (Double) planeta.get("diametre");
+            double distanciaSol = (Double) planeta.get("distancia_sol");
+
+            System.out.printf("│ %-20s │ %-10.2f │ %-12.2f │\n", nom, diametre, distanciaSol);
+        }
+        System.out.println("└──────────────────────┴────────────┴────────────┘");
+    }
 
     public static ArrayList<HashMap<String, Object>> JSONEsportistesToArrayList(String filePath) {
         ArrayList<HashMap<String, Object>> rst = new ArrayList<>();
@@ -168,7 +222,7 @@ public class Exercici0202 {
         String capitalizedMedalla = tipusMedalla.substring(0, 1).toUpperCase() + tipusMedalla.substring(1).toLowerCase();
 
         System.out.println("┌──────────────────────┬─────────────────┬────────────┬────────┐");
-        System.out.println("  │ Nom                  │ País            │ Naixement  │ " + capitalizedMedalla + " │");
+        System.out.println("│ Nom                  │ País            │ Naixement  │ " + capitalizedMedalla + "  │");
         System.out.println("├──────────────────────┼─────────────────┼────────────┼────────┤");
 
         for (HashMap<String, Object> esportista : esportistes) {
@@ -180,7 +234,6 @@ public class Exercici0202 {
 
             System.out.printf("│ %-20s │ %-15s │ %-10d │ %-6d │\n", nom, pais, any_naixement, medallaCount);
         }
-
         System.out.println("└──────────────────────┴─────────────────┴────────────┴────────┘");
     }
 
