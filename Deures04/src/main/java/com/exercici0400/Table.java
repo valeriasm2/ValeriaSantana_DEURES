@@ -24,24 +24,23 @@ public class Table extends Component {
         rst.add(0, " ".repeat(width)); 
 
         String capcelera = "";
-        for (int cnt = 0; cnt<headers.size();cnt++) {
+        for (int cnt = 0; cnt < headers.size(); cnt = cnt + 1) {
             String header = headers.get(cnt);
             int width = widths.get(cnt);
-            if ((headers.get(cnt)).length() < width){
-                capcelera += " ".repeat(width);
-            }
-            capcelera = capcelera +header;
 
-            if (cnt<(headers.size()-1)){
-                capcelera = capcelera +"|";
+            capcelera = capcelera + header;
+            
+            if (cnt < (headers.size() - 1)) {
+                capcelera = capcelera + "|";
             }
         }
         rst.add(1, " " + capcelera + " ");
 
-        // Asignar text segons alineació 
+
         for (int i = 2; i < height; i++) {
             rst.add(i, "x".repeat(width));
         }
+
         return rst;
     } 
 }

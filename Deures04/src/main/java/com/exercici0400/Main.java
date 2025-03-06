@@ -13,7 +13,7 @@ import java.util.HashMap;
  Input
  */
 
-public class Main {
+public class Main { 
     public static void main(String[] args) {
    
 
@@ -54,4 +54,5 @@ public class Main {
         Container container = new Container(50, 10, components);
         container.draw();
     }
+
 }
