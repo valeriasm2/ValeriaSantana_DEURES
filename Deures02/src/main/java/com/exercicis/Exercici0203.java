@@ -321,33 +321,66 @@ public class Exercici0203 {
      * @test ./runTest.sh com.exercicis.TestExercici0203#testGeneraMarcTaula
      */
     public static String generaMarcTaula(int[] columnWidths, char[] separators) {
-        return "";
+        StringBuilder separador = new StringBuilder();
+
+        separador.append(separators[0]);
+
+        for (int i = 0; i < columnWidths.length; i++) {
+            for ( int j = 0; j < columnWidths[i]; j++) {
+                separador.append("─");
+            }
+
+            if (i < columnWidths.length - 1) {
+                separador.append(separators[1]);
+            }
+        }
+
+        separador.append(separators[2]);
+
+        return separador.toString();
     }
 
     /**
-     * Formata una fila de la taula amb els valors de cada columna, ajustant
-     * l'amplada segons
+     * Formata una fila de la taula amb els valors de cada columna, ajustant l'amplada segons 
      * els valors especificats i afegint marges i separadors.
      *
-     * Cada cel·la s'alinea a l'esquerra i es complementa amb espais en blanc si cal
+     * Cada cel·la s'alinea a l'esquerra i es complementa amb espais en blanc si cal 
      * per ajustar-se a l'amplada de la columna.
      *
      * Exemples:
      * formatRow(new String[]{"Nom", "País", "Any"}, new int[]{10, 6, 4});
-     * Retorna: "│ Nom │ País │ Any │"
+     * Retorna: "│Nom       │País  │Any │"
      *
      * formatRow(new String[]{"Machu Picchu", "Perú", "1983"}, new int[]{10, 6, 4});
-     * Retorna: "│ Machu Picc│ Perú │ 1983│"
+     * Retorna: "│Machu Picc│Perú  │1983│"
      *
-     * @param values       Array amb els valors de cada columna.
+     * @param values Array amb els valors de cada columna.
      * @param columnWidths Array amb l'amplada de cada columna.
      * @return Una cadena de text formatejada representant una fila de la taula.
      * 
      * @test ./runTest.sh com.exercicis.TestExercici0203#testFormatRow
      */
-    private static String formatRow(String[] values, int[] columnWidths) {
-        return "";
+    public static String formatRow(String[] values, int[] columnWidths) {
+        StringBuilder separador = new StringBuilder();
+    
+        // Recorremos todas las celdas
+        for (int i = 0; i < values.length; i++) {
+            String value = values[i];
+            int columnWidth = columnWidths[i];
+    
+            // Ajustamos el tamaño de cada celda a la anchura proporcionada, alineado a la izquierda
+            String formatoValue = String.format("%-" + columnWidth + "s", value);
+    
+            // Añadimos el separador correcto entre las celdas (│ en vez de |)
+            separador.append("│").append(formatoValue);
+        }
+        
+        // Añadimos el separador final de la fila
+        separador.append("│");
+    
+        return separador.toString();
     }
+    
 
     /**
      * Obté una representació en format text de les coordenades d'un monument.
