@@ -104,6 +104,7 @@ public class Cinema {
      * └─────────┴─────────────┘
      */
     public static void llistarInfoPeli(int idLlibre) {
+        
     }
 
     /**
