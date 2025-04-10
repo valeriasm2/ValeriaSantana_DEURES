@@ -476,3 +476,217 @@ public class ActualizadorSincronizado {
     }
 }
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.sql.*;
+import java.util.List;
+import java.util.Map;
+
+public class JsonSqliteConverter {
+
+    // Conexión a la base de datos SQLite
+    private Connection connect(String dbPath) throws SQLException {
+        String url = "jdbc:sqlite:" + dbPath;
+        return DriverManager.getConnection(url);
+    }
+
+    /**
+     * Crea las tablas necesarias en la base de datos
+     */
+    public void createTables(String dbPath) {
+        String sqlPersonas = "CREATE TABLE IF NOT EXISTS personas (" +
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                            "nombre TEXT NOT NULL," +
+                            "edad INTEGER," +
+                            "trabaja BOOLEAN," +
+                            "ciudad TEXT," +
+                            "calle TEXT)";
+        
+        String sqlMarcadores = "CREATE TABLE IF NOT EXISTS marcadores (" +
+                              "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                              "latitud REAL," +
+                              "longitud REAL," +
+                              "ciudad TEXT," +
+                              "descripcion TEXT)";
+
+        try (Connection conn = connect(dbPath);
+             Statement stmt = conn.createStatement()) {
+            
+            stmt.execute(sqlPersonas);
+            stmt.execute(sqlMarcadores);
+            System.out.println("Tablas creadas correctamente");
+            
+        } catch (SQLException e) {
+            System.out.println("Error al crear tablas: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Importa datos de personas desde JSON a SQLite
+     */
+    public void importPersonasFromJson(String jsonStr, String dbPath) {
+        Gson gson = new Gson();
+        List<Map<String, Object>> personas = gson.fromJson(jsonStr, 
+            new TypeToken<List<Map<String, Object>>>(){}.getType());
+
+        String sql = "INSERT INTO personas (nombre, edad, trabaja, ciudad, calle) " +
+                     "VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection conn = connect(dbPath);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            for (Map<String, Object> persona : personas) {
+                @SuppressWarnings("unchecked")
+                Map<String, String> direccion = (Map<String, String>) persona.get("adreça");
+                
+                pstmt.setString(1, (String) persona.get("nom"));
+                pstmt.setInt(2, ((Double) persona.get("edat")).intValue());
+                pstmt.setBoolean(3, (Boolean) persona.get("treballa"));
+                pstmt.setString(4, direccion.get("ciutat"));
+                pstmt.setString(5, direccion.get("carrer"));
+                pstmt.executeUpdate();
+            }
+            
+            System.out.println("Datos de personas importados correctamente");
+            
+        } catch (SQLException e) {
+            System.out.println("Error al importar personas: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Importa marcadores desde JSON a SQLite
+     */
+    public void importMarcadoresFromJson(String jsonStr, String dbPath) {
+        Gson gson = new Gson();
+        Map<String, List<Map<String, Object>>> data = gson.fromJson(jsonStr, 
+            new TypeToken<Map<String, List<Map<String, Object>>>>(){}.getType());
+        
+        List<Map<String, Object>> marcadores = data.get("marcadores");
+
+        String sql = "INSERT INTO marcadores (latitud, longitud, ciudad, descripcion) " +
+                     "VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = connect(dbPath);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            for (Map<String, Object> marcador : marcadores) {
+                pstmt.setDouble(1, (Double) marcador.get("latitude"));
+                pstmt.setDouble(2, (Double) marcador.get("longitude"));
+                pstmt.setString(3, (String) marcador.get("city"));
+                pstmt.setString(4, (String) marcador.get("description"));
+                pstmt.executeUpdate();
+            }
+            
+            System.out.println("Marcadores importados correctamente");
+            
+        } catch (SQLException e) {
+            System.out.println("Error al importar marcadores: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Exporta personas desde SQLite a JSON
+     */
+    public String exportPersonasToJson(String dbPath) {
+        String sql = "SELECT * FROM personas";
+        Gson gson = new Gson();
+        
+        try (Connection conn = connect(dbPath);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            StringBuilder json = new StringBuilder("[");
+            
+            while (rs.next()) {
+                String persona = String.format(
+                    "{\"nom\":\"%s\",\"edat\":%d,\"treballa\":%s," +
+                    "\"adreça\":{\"ciutat\":\"%s\",\"carrer\":\"%s\"}}",
+                    rs.getString("nombre"),
+                    rs.getInt("edad"),
+                    rs.getBoolean("trabaja"),
+                    rs.getString("ciudad"),
+                    rs.getString("calle")
+                );
+                json.append(persona).append(",");
+            }
+            
+            if (json.length() > 1) {
+                json.deleteCharAt(json.length() - 1); // Eliminar última coma
+            }
+            json.append("]");
+            
+            return json.toString();
+            
+        } catch (SQLException e) {
+            System.out.println("Error al exportar personas: " + e.getMessage());
+            return "[]";
+        }
+    }
+
+    /**
+     * Exporta marcadores desde SQLite a JSON
+     */
+    public String exportMarcadoresToJson(String dbPath) {
+        String sql = "SELECT * FROM marcadores";
+        Gson gson = new Gson();
+        
+        try (Connection conn = connect(dbPath);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            StringBuilder json = new StringBuilder("{\"marcadores\":[");
+            
+            while (rs.next()) {
+                String marcador = String.format(
+                    "{\"latitude\":%f,\"longitude\":%f," +
+                    "\"city\":\"%s\",\"description\":\"%s\"}",
+                    rs.getDouble("latitud"),
+                    rs.getDouble("longitud"),
+                    rs.getString("ciudad"),
+                    rs.getString("descripcion")
+                );
+                json.append(marcador).append(",");
+            }
+            
+            if (json.length() > 15) { // "{\"marcadores\":[".length() + 1
+                json.deleteCharAt(json.length() - 1); // Eliminar última coma
+            }
+            json.append("]}");
+            
+            return json.toString();
+            
+        } catch (SQLException e) {
+            System.out.println("Error al exportar marcadores: " + e.getMessage());
+            return "{\"marcadores\":[]}";
+        }
+    }
+
+    public static void main(String[] args) {
+        JsonSqliteConverter converter = new JsonSqliteConverter();
+        String dbPath = "datos.db";
+        
+        // 1. Crear tablas
+        converter.createTables(dbPath);
+        
+        // 2. Ejemplo de importación desde JSON
+        String jsonPersonas = "[{\"treballa\":true,\"estudis\":[\"CFGS DAM\",\"CFGM SMX\"],"
+                           + "\"ultima_modificacio\":\"2025-01-09T15:46:05\","
+                           + "\"adreça\":{\"ciutat\":\"Cornellà\",\"carrer\":\"Carrer de la Llibertat\"},"
+                           + "\"nom\":\"Marc\",\"edat\":20}]";
+        
+        String jsonMarcadores = "{\"marcadores\":["
+                              + "{\"latitude\":40.416875,\"longitude\":-3.703308,"
+                              + "\"city\":\"Madrid\",\"description\":\"Puerta del Sol\"}]}";
+        
+        converter.importPersonasFromJson(jsonPersonas, dbPath);
+        converter.importMarcadoresFromJson(jsonMarcadores, dbPath);
+        
+        // 3. Ejemplo de exportación a JSON
+        String personasExportadas = converter.exportPersonasToJson(dbPath);
+        String marcadoresExportados = converter.exportMarcadoresToJson(dbPath);
+        
+        System.out.println("Personas exportadas:\n" + personasExportadas);
+        System.out.println("\nMarcadores exportados:\n" + marcadoresExportados);
+    }
+}
