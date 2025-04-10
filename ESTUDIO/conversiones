@@ -1,0 +1,478 @@
+// 1. Conversiones Básicas entre JsonObject y JsonArray
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+public class JsonConversiones {
+    public static void main(String[] args) {
+        // Ejemplo 1: Crear JsonObject y convertirlo a JsonArray
+        JSONObject objeto1 = new JSONObject();
+        objeto1.put("id", 1);
+        objeto1.put("nombre", "Monitor");
+        objeto1.put("precio", 199.99);
+        
+        JSONObject objeto2 = new JSONObject();
+        objeto2.put("id", 2);
+        objeto2.put("nombre", "Teclado");
+        objeto2.put("precio", 29.99);
+        
+        // Convertir objetos individuales a un array
+        JSONArray array = new JSONArray();
+        array.put(objeto1);
+        array.put(objeto2);
+        
+        System.out.println("Array JSON:\n" + array.toString(2));
+        
+        // Ejemplo 2: Extraer objetos desde array
+        JSONObject primerElemento = array.getJSONObject(0);
+        System.out.println("\nPrimer elemento:\n" + primerElemento.toString(2));
+        
+        // Ejemplo 3: Convertir array completo a objeto con clave
+        JSONObject objetoContenedor = new JSONObject();
+        objetoContenedor.put("productos", array);
+        System.out.println("\nObjeto contenedor:\n" + objetoContenedor.toString(2));
+        
+        // Ejemplo 4: Recuperar array desde objeto contenedor
+        JSONArray arrayRecuperado = objetoContenedor.getJSONArray("productos");
+        System.out.println("\nArray recuperado:\n" + arrayRecuperado.toString(2));
+    }
+}
+
+
+// 2. Conexión SQLite a JSON
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.sql.*;
+
+public class SQLiteToJsonDirecto {
+    private static final String DB_PATH = "inventario.db";
+    
+    public static void main(String[] args) {
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:" + DB_PATH)) {
+            // 1. Crear tabla si no existe
+            crearTablaProductos(conn);
+            
+            // 2. Insertar datos de ejemplo
+            insertarDatosEjemplo(conn);
+            
+            // 3. Obtener todos los productos como JSON
+            JSONArray productosJson = obtenerProductosComoJson(conn);
+            System.out.println("Productos en JSON:\n" + productosJson.toString(2));
+            
+            // 4. Insertar nuevo producto desde JSON
+            JSONObject nuevoProducto = new JSONObject();
+            nuevoProducto.put("nombre", "Impresora");
+            nuevoProducto.put("precio", 149.99);
+            nuevoProducto.put("stock", 15);
+            
+            insertarDesdeJson(conn, nuevoProducto);
+            System.out.println("\nProductos después de inserción:\n" + 
+                             obtenerProductosComoJson(conn).toString(2));
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private static void crearTablaProductos(Connection conn) throws SQLException {
+        String sql = "CREATE TABLE IF NOT EXISTS productos (" +
+                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                     "nombre TEXT NOT NULL," +
+                     "precio REAL NOT NULL," +
+                     "stock INTEGER NOT NULL)";
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        }
+    }
+    
+    private static void insertarDatosEjemplo(Connection conn) throws SQLException {
+        // Verificar si la tabla está vacía
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM productos")) {
+            if (rs.getInt(1) > 0) return;
+        }
+        
+        // Insertar datos iniciales
+        String sql = "INSERT INTO productos (nombre, precio, stock) VALUES (?, ?, ?)";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, "Monitor");
+            pstmt.setDouble(2, 199.99);
+            pstmt.setInt(3, 10);
+            pstmt.executeUpdate();
+            
+            pstmt.setString(1, "Teclado");
+            pstmt.setDouble(2, 29.99);
+            pstmt.setInt(3, 50);
+            pstmt.executeUpdate();
+        }
+    }
+    
+    private static JSONArray obtenerProductosComoJson(Connection conn) throws SQLException {
+        JSONArray array = new JSONArray();
+        String sql = "SELECT * FROM productos";
+        
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            while (rs.next()) {
+                JSONObject obj = new JSONObject();
+                obj.put("id", rs.getInt("id"));
+                obj.put("nombre", rs.getString("nombre"));
+                obj.put("precio", rs.getDouble("precio"));
+                obj.put("stock", rs.getInt("stock"));
+                array.put(obj);
+            }
+        }
+        return array;
+    }
+    
+    private static void insertarDesdeJson(Connection conn, JSONObject jsonProducto) throws SQLException {
+        String sql = "INSERT INTO productos (nombre, precio, stock) VALUES (?, ?, ?)";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, jsonProducto.getString("nombre"));
+            pstmt.setDouble(2, jsonProducto.getDouble("precio"));
+            pstmt.setInt(3, jsonProducto.getInt("stock"));
+            pstmt.executeUpdate();
+        }
+    }
+}
+
+// 3. Ejemplo Completo: Sistema de Facturación Simple
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.sql.*;
+
+public class SistemaFacturacion {
+    private static final String DB_PATH = "facturacion.db";
+    
+    public static void main(String[] args) {
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:" + DB_PATH)) {
+            // Inicializar base de datos
+            inicializarDB(conn);
+            
+            // 1. Crear factura desde JSON
+            JSONObject facturaJson = new JSONObject();
+            facturaJson.put("cliente", "Juan Pérez");
+            facturaJson.put("fecha", "2023-05-15");
+            
+            JSONArray items = new JSONArray();
+            
+            JSONObject item1 = new JSONObject();
+            item1.put("producto_id", 1);
+            item1.put("cantidad", 2);
+            
+            JSONObject item2 = new JSONObject();
+            item2.put("producto_id", 2);
+            item2.put("cantidad", 3);
+            
+            items.put(item1);
+            items.put(item2);
+            
+            facturaJson.put("items", items);
+            
+            // 2. Procesar factura
+            procesarFactura(conn, facturaJson);
+            
+            // 3. Obtener reporte en JSON
+            JSONObject reporte = generarReporte(conn);
+            System.out.println("Reporte de ventas:\n" + reporte.toString(2));
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private static void inicializarDB(Connection conn) throws SQLException {
+        // Crear tablas si no existen
+        try (Statement stmt = conn.createStatement()) {
+            // Tabla productos
+            stmt.execute("CREATE TABLE IF NOT EXISTS productos (" +
+                         "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                         "nombre TEXT NOT NULL," +
+                         "precio REAL NOT NULL," +
+                         "stock INTEGER NOT NULL)");
+            
+            // Tabla facturas
+            stmt.execute("CREATE TABLE IF NOT EXISTS facturas (" +
+                         "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                         "cliente TEXT NOT NULL," +
+                         "fecha TEXT NOT NULL," +
+                         "total REAL NOT NULL)");
+            
+            // Tabla items_factura
+            stmt.execute("CREATE TABLE IF NOT EXISTS items_factura (" +
+                         "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                         "factura_id INTEGER NOT NULL," +
+                         "producto_id INTEGER NOT NULL," +
+                         "cantidad INTEGER NOT NULL," +
+                         "precio_unitario REAL NOT NULL," +
+                         "FOREIGN KEY(factura_id) REFERENCES facturas(id)," +
+                         "FOREIGN KEY(producto_id) REFERENCES productos(id))");
+            
+            // Insertar productos de ejemplo si no existen
+            if (!existenDatos(conn, "productos")) {
+                insertarProductosIniciales(conn);
+            }
+        }
+    }
+    
+    private static boolean existenDatos(Connection conn, String tabla) throws SQLException {
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM " + tabla)) {
+            return rs.getInt(1) > 0;
+        }
+    }
+    
+    private static void insertarProductosIniciales(Connection conn) throws SQLException {
+        String sql = "INSERT INTO productos (nombre, precio, stock) VALUES (?, ?, ?)";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, "Laptop");
+            pstmt.setDouble(2, 899.99);
+            pstmt.setInt(3, 10);
+            pstmt.executeUpdate();
+            
+            pstmt.setString(1, "Mouse");
+            pstmt.setDouble(2, 19.99);
+            pstmt.setInt(3, 50);
+            pstmt.executeUpdate();
+            
+            pstmt.setString(1, "Teclado");
+            pstmt.setDouble(2, 49.99);
+            pstmt.setInt(3, 30);
+            pstmt.executeUpdate();
+        }
+    }
+    
+    private static void procesarFactura(Connection conn, JSONObject facturaJson) throws SQLException {
+        conn.setAutoCommit(false); // Iniciar transacción
+        
+        try {
+            // 1. Insertar factura
+            String sqlFactura = "INSERT INTO facturas (cliente, fecha, total) VALUES (?, ?, 0)";
+            int facturaId;
+            
+            try (PreparedStatement pstmt = conn.prepareStatement(sqlFactura, 
+                                     Statement.RETURN_GENERATED_KEYS)) {
+                pstmt.setString(1, facturaJson.getString("cliente"));
+                pstmt.setString(2, facturaJson.getString("fecha"));
+                pstmt.executeUpdate();
+                
+                try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        facturaId = rs.getInt(1);
+                    } else {
+                        throw new SQLException("No se pudo obtener el ID de la factura");
+                    }
+                }
+            }
+            
+            // 2. Procesar items
+            JSONArray items = facturaJson.getJSONArray("items");
+            double totalFactura = 0;
+            
+            for (int i = 0; i < items.length(); i++) {
+                JSONObject item = items.getJSONObject(i);
+                int productoId = item.getInt("producto_id");
+                int cantidad = item.getInt("cantidad");
+                
+                // Obtener información del producto
+                JSONObject producto = obtenerProducto(conn, productoId);
+                double precio = producto.getDouble("precio");
+                int stock = producto.getInt("stock");
+                
+                // Verificar stock
+                if (stock < cantidad) {
+                    throw new SQLException("Stock insuficiente para el producto ID: " + productoId);
+                }
+                
+                // Actualizar stock
+                actualizarStock(conn, productoId, stock - cantidad);
+                
+                // Insertar item
+                String sqlItem = "INSERT INTO items_factura (factura_id, producto_id, cantidad, precio_unitario) " +
+                                "VALUES (?, ?, ?, ?)";
+                try (PreparedStatement pstmt = conn.prepareStatement(sqlItem)) {
+                    pstmt.setInt(1, facturaId);
+                    pstmt.setInt(2, productoId);
+                    pstmt.setInt(3, cantidad);
+                    pstmt.setDouble(4, precio);
+                    pstmt.executeUpdate();
+                }
+                
+                totalFactura += precio * cantidad;
+            }
+            
+            // Actualizar total de factura
+            String sqlUpdateTotal = "UPDATE facturas SET total = ? WHERE id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sqlUpdateTotal)) {
+                pstmt.setDouble(1, totalFactura);
+                pstmt.setInt(2, facturaId);
+                pstmt.executeUpdate();
+            }
+            
+            conn.commit(); // Confirmar transacción
+            System.out.println("Factura procesada exitosamente!");
+            
+        } catch (Exception e) {
+            conn.rollback(); // Revertir en caso de error
+            throw e;
+        } finally {
+            conn.setAutoCommit(true);
+        }
+    }
+    
+    private static JSONObject obtenerProducto(Connection conn, int id) throws SQLException {
+        String sql = "SELECT * FROM productos WHERE id = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    JSONObject obj = new JSONObject();
+                    obj.put("id", rs.getInt("id"));
+                    obj.put("nombre", rs.getString("nombre"));
+                    obj.put("precio", rs.getDouble("precio"));
+                    obj.put("stock", rs.getInt("stock"));
+                    return obj;
+                }
+            }
+        }
+        throw new SQLException("Producto no encontrado con ID: " + id);
+    }
+    
+    private static void actualizarStock(Connection conn, int productoId, int nuevoStock) throws SQLException {
+        String sql = "UPDATE productos SET stock = ? WHERE id = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, nuevoStock);
+            pstmt.setInt(2, productoId);
+            pstmt.executeUpdate();
+        }
+    }
+    
+    private static JSONObject generarReporte(Connection conn) throws SQLException {
+        JSONObject reporte = new JSONObject();
+        
+        // 1. Total de ventas
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT SUM(total) FROM facturas")) {
+            reporte.put("total_ventas", rs.getDouble(1));
+        }
+        
+        // 2. Productos más vendidos
+        JSONArray productosVendidos = new JSONArray();
+        String sqlProductos = "SELECT p.id, p.nombre, SUM(i.cantidad) as total_vendido " +
+                              "FROM items_factura i JOIN productos p ON i.producto_id = p.id " +
+                              "GROUP BY p.id ORDER BY total_vendido DESC LIMIT 5";
+        
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sqlProductos)) {
+            while (rs.next()) {
+                JSONObject obj = new JSONObject();
+                obj.put("id", rs.getInt("id"));
+                obj.put("nombre", rs.getString("nombre"));
+                obj.put("total_vendido", rs.getInt("total_vendido"));
+                productosVendidos.put(obj);
+            }
+        }
+        reporte.put("productos_mas_vendidos", productosVendidos);
+        
+        // 3. Últimas facturas
+        JSONArray ultimasFacturas = new JSONArray();
+        String sqlFacturas = "SELECT id, cliente, fecha, total FROM facturas ORDER BY id DESC LIMIT 5";
+        
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sqlFacturas)) {
+            while (rs.next()) {
+                JSONObject obj = new JSONObject();
+                obj.put("id", rs.getInt("id"));
+                obj.put("cliente", rs.getString("cliente"));
+                obj.put("fecha", rs.getString("fecha"));
+                obj.put("total", rs.getDouble("total"));
+                ultimasFacturas.put(obj);
+            }
+        }
+        reporte.put("ultimas_facturas", ultimasFacturas);
+        
+        return reporte;
+    }
+}
+
+// 1. Función Básica de UPDATE con Sincronización JSON
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.*;
+
+public class ActualizadorSincronizado {
+    private static final String DB_PATH = "productos.db";
+    private static final String JSON_PATH = "productos.json";
+    
+    public static void main(String[] args) {
+        // Ejemplo de uso
+        actualizarProducto(2, "Teclado Mecánico", 59.99, 25);
+    }
+    
+    public static void actualizarProducto(int id, String nuevoNombre, double nuevoPrecio, int nuevoStock) {
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:" + DB_PATH)) {
+            // 1. Actualizar en SQLite
+            actualizarEnSQLite(conn, id, nuevoNombre, nuevoPrecio, nuevoStock);
+            
+            // 2. Actualizar en JSON
+            actualizarEnJson(id, nuevoNombre, nuevoPrecio, nuevoStock);
+            
+            System.out.println("Producto actualizado correctamente en ambas fuentes");
+            
+        } catch (Exception e) {
+            System.err.println("Error al actualizar producto: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private static void actualizarEnSQLite(Connection conn, int id, String nombre, double precio, int stock) 
+            throws SQLException {
+        String sql = "UPDATE productos SET nombre = ?, precio = ?, stock = ? WHERE id = ?";
+        
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, nombre);
+            pstmt.setDouble(2, precio);
+            pstmt.setInt(3, stock);
+            pstmt.setInt(4, id);
+            
+            int filasAfectadas = pstmt.executeUpdate();
+            
+            if (filasAfectadas == 0) {
+                throw new SQLException("No se encontró el producto con ID: " + id);
+            }
+        }
+    }
+    
+    private static void actualizarEnJson(int id, String nombre, double precio, int stock) throws Exception {
+        // 1. Leer archivo JSON existente
+        String contenido = new String(Files.readAllBytes(Paths.get(JSON_PATH)));
+        JSONArray productos = new JSONArray(contenido);
+        
+        // 2. Buscar y actualizar el producto
+        boolean encontrado = false;
+        for (int i = 0; i < productos.length(); i++) {
+            JSONObject producto = productos.getJSONObject(i);
+            if (producto.getInt("id") == id) {
+                producto.put("nombre", nombre);
+                producto.put("precio", precio);
+                producto.put("stock", stock);
+                encontrado = true;
+                break;
+            }
+        }
+        
+        if (!encontrado) {
+            throw new Exception("Producto no encontrado en JSON con ID: " + id);
+        }
+        
+        // 3. Escribir el JSON actualizado de vuelta al archivo
+        Files.write(Paths.get(JSON_PATH), productos.toString(2).getBytes());
+    }
+}
+
