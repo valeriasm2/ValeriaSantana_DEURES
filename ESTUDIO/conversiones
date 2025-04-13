@@ -690,3 +690,231 @@ public class JsonSqliteConverter {
         System.out.println("\nMarcadores exportados:\n" + marcadoresExportados);
     }
 }
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.io.*;
+import java.nio.file.*;
+import java.sql.*;
+import java.util.*;
+
+public class SincronizadorJsonSqlite {
+    private static final String DB_PATH = "datos_sincronizados.db";
+    private static final String JSON_PATH = "datos.json";
+    
+    public static void main(String[] args) {
+        try {
+            // 1. Sincronizar desde JSON a SQLite
+            sincronizarJsonASqlite();
+            
+            // 2. Hacer cambios en SQLite
+            hacerCambiosEnSqlite();
+            
+            // 3. Sincronizar desde SQLite a JSON
+            sincronizarSqliteAJson();
+            
+            System.out.println("Sincronización completada exitosamente");
+            
+        } catch (Exception e) {
+            System.err.println("Error en sincronización: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private static void sincronizarJsonASqlite() throws Exception {
+        // Leer archivo JSON
+        String contenido = new String(Files.readAllBytes(Paths.get(JSON_PATH)));
+        JSONArray jsonArray = new JSONArray(contenido);
+        
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:" + DB_PATH)) {
+            // Crear tabla si no existe
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute("CREATE TABLE IF NOT EXISTS productos (" +
+                            "id INTEGER PRIMARY KEY," +
+                            "nombre TEXT NOT NULL," +
+                            "precio REAL NOT NULL," +
+                            "categoria TEXT," +
+                            "ultima_actualizacion TEXT)");
+            }
+            
+            // Sincronizar datos
+            conn.setAutoCommit(false);
+            try (PreparedStatement pstmtSelect = conn.prepareStatement(
+                    "SELECT ultima_actualizacion FROM productos WHERE id = ?");
+                 PreparedStatement pstmtInsert = conn.prepareStatement(
+                    "INSERT OR REPLACE INTO productos (id, nombre, precio, categoria, ultima_actualizacion) " +
+                    "VALUES (?, ?, ?, ?, ?)")) {
+                
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject item = jsonArray.getJSONObject(i);
+                    int id = item.getInt("id"));
+                    String ultimaActualizacionJson = item.getString("ultima_actualizacion"));
+                    
+                    // Verificar si necesita actualización
+                    boolean necesitaActualizar = true;
+                    
+                    pstmtSelect.setInt(1, id);
+                    try (ResultSet rs = pstmtSelect.executeQuery()) {
+                        if (rs.next()) {
+                            String ultimaActualizacionDb = rs.getString("ultima_actualizacion");
+                            if (ultimaActualizacionDb != null && 
+                                ultimaActualizacionDb.compareTo(ultimaActualizacionJson) >= 0) {
+                                necesitaActualizar = false;
+                            }
+                        }
+                    }
+                    
+                    if (necesitaActualizar) {
+                        pstmtInsert.setInt(1, id);
+                        pstmtInsert.setString(2, item.getString("nombre"));
+                        pstmtInsert.setDouble(3, item.getDouble("precio"));
+                        pstmtInsert.setString(4, item.optString("categoria", null));
+                        pstmtInsert.setString(5, ultimaActualizacionJson);
+                        pstmtInsert.executeUpdate();
+                    }
+                }
+                
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        }
+    }
+    
+    private static void hacerCambiosEnSqlite() throws SQLException {
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:" + DB_PATH)) {
+            // Actualizar un producto
+            try (PreparedStatement pstmt = conn.prepareStatement(
+                    "UPDATE productos SET precio = ?, ultima_actualizacion = ? WHERE id = ?")) {
+                pstmt.setDouble(1, 29.99);
+                pstmt.setString(2, new Date().toString());
+                pstmt.setInt(3, 2);
+                pstmt.executeUpdate();
+            }
+            
+            // Añadir nuevo producto
+            try (PreparedStatement pstmt = conn.prepareStatement(
+                    "INSERT INTO productos (id, nombre, precio, categoria, ultima_actualizacion) " +
+                    "VALUES (?, ?, ?, ?, ?)")) {
+                pstmt.setInt(1, 100);
+                pstmt.setString(2, "Nuevo Producto");
+                pstmt.setDouble(3, 49.99);
+                pstmt.setString(4, "Electrónica");
+                pstmt.setString(5, new Date().toString());
+                pstmt.executeUpdate();
+            }
+        }
+    }
+    
+    private static void sincronizarSqliteAJson() throws Exception {
+        // Leer datos actuales de SQLite
+        JSONArray jsonArray;
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:" + DB_PATH);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT * FROM productos")) {
+            
+            jsonArray = new JSONArray();
+            while (rs.next()) {
+                JSONObject item = new JSONObject();
+                item.put("id", rs.getInt("id"));
+                item.put("nombre", rs.getString("nombre"));
+                item.put("precio", rs.getDouble("precio"));
+                if (rs.getString("categoria") != null) {
+                    item.put("categoria", rs.getString("categoria"));
+                }
+                item.put("ultima_actualizacion", rs.getString("ultima_actualizacion"));
+                jsonArray.put(item);
+            }
+        }
+        
+        // Escribir al archivo JSON
+        Files.write(Paths.get(JSON_PATH), jsonArray.toString(2).getBytes());
+    }
+}
+
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.sql.*;
+
+public class JsonToDatabase {
+    private static final String DB_PATH = "basedatos.db";
+
+    public static void main(String[] args) {
+        String jsonData = """
+            {
+                "PRODUCTOS": [
+                    { "id": 1, "nombre": "Producto A", "precio": 19.99 },
+                    { "id": 2, "nombre": "Producto B", "precio": 29.99 }
+                ]
+            }
+            """;
+
+        // Extraer el array usando la key "PRODUCTOS"
+        JSONObject jsonObject = new JSONObject(jsonData);
+        JSONArray productosArray = jsonObject.getJSONArray("PRODUCTOS");
+
+        // Insertar en SQLite
+        insertJsonIntoDatabase(productosArray, "productos");
+    }
+
+    public static void insertJsonIntoDatabase(JSONArray jsonArray, String tableName) {
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:" + DB_PATH)) {
+            // 1. Crear tabla si no existe
+            String createTableSQL = "CREATE TABLE IF NOT EXISTS " + tableName + " (" +
+                                   "id INTEGER PRIMARY KEY, " +
+                                   "nombre TEXT NOT NULL, " +
+                                   "precio REAL)";
+            
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute(createTableSQL);
+            }
+
+            // 2. Insertar datos desde el JSON
+            String insertSQL = "INSERT OR REPLACE INTO " + tableName + " (id, nombre, precio) VALUES (?, ?, ?)";
+            
+            try (PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject obj = jsonArray.getJSONObject(i);
+                    pstmt.setInt(1, obj.getInt("id"));
+                    pstmt.setString(2, obj.getString("nombre"));
+                    pstmt.setDouble(3, obj.getDouble("precio"));
+                    pstmt.executeUpdate();
+                }
+                System.out.println("✅ Datos insertados en la tabla: " + tableName);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("❌ Error: " + e.getMessage());
+        }
+    }
+}
+
+
+
+public static String exportDatabaseToJson(String tableName) {
+    JSONObject jsonOutput = new JSONObject();
+    JSONArray jsonArray = new JSONArray();
+
+    try (Connection conn = DriverManager.getConnection("jdbc:sqlite:" + DB_PATH);
+         Statement stmt = conn.createStatement();
+         ResultSet rs = stmt.executeQuery("SELECT * FROM " + tableName)) {
+
+        while (rs.next()) {
+            JSONObject obj = new JSONObject();
+            obj.put("id", rs.getInt("id"));
+            obj.put("nombre", rs.getString("nombre"));
+            obj.put("precio", rs.getDouble("precio"));
+            jsonArray.put(obj);
+        }
+
+        jsonOutput.put("PRODUCTOS", jsonArray); // Key principal
+        return jsonOutput.toString(2); // Formateado con 2 espacios
+
+    } catch (SQLException e) {
+        return "{\"error\": \"" + e.getMessage() + "\"}";
+    }
+}
