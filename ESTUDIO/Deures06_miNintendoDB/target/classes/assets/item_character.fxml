@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.effect.DropShadow?>
+
+<HBox alignment="CENTER_LEFT" spacing="15" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 5, 0, 1, 1);" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <!-- Contenedor de la imagen con borde circular -->
+    <StackPane>
+        <Circle radius="28" fill="white" stroke="#e0e0e0" strokeWidth="1.5"/>
+        <ImageView fx:id="imgCharacter" fitHeight="50" fitWidth="50" preserveRatio="true" pickOnBounds="true">
+            <StackPane.margin>
+                <Insets right="5.0"/>
+            </StackPane.margin>
+        </ImageView>
+    </StackPane>
+    
+    <!-- Información del personaje -->
+    <VBox spacing="3" alignment="CENTER_LEFT">
+        <Label fx:id="lblName" style="-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #333;"/>
+        <HBox spacing="8" alignment="CENTER_LEFT">
+            <Label fx:id="lblGame" style="-fx-font-size: 13px; -fx-text-fill: #666;"/>
+            <Circle fx:id="circleColor" radius="6" stroke="#e0e0e0" strokeWidth="1"/>
+        </HBox>
+    </VBox>
+</HBox>

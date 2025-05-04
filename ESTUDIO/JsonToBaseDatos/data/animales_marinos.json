@@ -1,0 +1,111 @@
+{
+    "mamiferos_marinos": [
+      {
+        "nombre_cientifico": "Orcinus orca",
+        "nombre_comun": "Orca",
+        "longitud_promedio": 8,
+        "peso_promedio_kg": 5000,
+        "habitat": "Océanos",
+        "dieta": ["peces", "focas", "ballenas"],
+        "esperanza_vida": 50,
+        "conservacion": "Preocupación menor"
+      },
+      {
+        "nombre_cientifico": "Delphinus delphis",
+        "nombre_comun": "Delfín común",
+        "longitud_promedio": 2.5,
+        "peso_promedio_kg": 100,
+        "habitat": "Océanos tropicales y templados",
+        "dieta": ["peces", "calamares"],
+        "esperanza_vida": 25,
+        "conservacion": "Preocupación menor"
+      }
+    ],
+    "tiburones": [
+      {
+        "nombre_cientifico": "Carcharodon carcharias",
+        "nombre_comun": "Tiburón blanco",
+        "longitud_promedio": 4.5,
+        "habitats": ["aguas costeras", "oceánicas"],
+        "especie_protegida": true,
+        "conservacion": "Vulnerable"
+      },
+      {
+        "nombre_cientifico": "Rhincodon typus",
+        "nombre_comun": "Tiburón ballena",
+        "longitud_promedio": 12,
+        "habitats": ["aguas tropicales"],
+        "especie_protegida": true,
+        "conservacion": "En peligro"
+      }
+    ],
+    "aves": [
+      {
+        "nombre_cientifico": "Aquila chrysaetos",
+        "nombre_comun": "Águila real",
+        "envergadura_cm": 220,
+        "habitats": ["montañas", "bosques", "zonas abiertas"],
+        "dieta": ["mamíferos pequeños", "aves", "reptiles"],
+        "migratoria": false
+      },
+      {
+        "nombre_cientifico": "Pygoscelis adeliae",
+        "nombre_comun": "Pingüino Adelia",
+        "longitud_promedio": 70,
+        "habitat": "Antártida",
+        "dieta": ["krill", "peces"],
+        "conservacion": "Preocupación menor"
+      }
+    ],
+    "reptiles": [
+      {
+        "nombre_cientifico": "Crocodylus niloticus",
+        "nombre_comun": "Cocodrilo del Nilo",
+        "longitud_promedio": 5,
+        "peso_promedio_kg": 750,
+        "habitat": "Ríos y lagos de África",
+        "conservacion": "Preocupación menor"
+      },
+      {
+        "nombre_cientifico": "Chelonia mydas",
+        "nombre_comun": "Tortuga verde",
+        "longitud_promedio": 1.5,
+        "peso_promedio_kg": 160,
+        "habitats": ["océanos tropicales", "playas de anidación"],
+        "conservacion": "En peligro"
+      }
+    ],
+    "insectos": [
+      {
+        "nombre_cientifico": "Danaus plexippus",
+        "nombre_comun": "Mariposa monarca",
+        "envergadura_cm": 10,
+        "migratoria": true,
+        "ruta_migratoria": ["Canadá", "EEUU", "México"],
+        "conservacion": "En peligro"
+      },
+      {
+        "nombre_cientifico": "Atta cephalotes",
+        "nombre_comun": "Hormiga cortadora de hojas",
+        "tamano_cm": 0.5,
+        "habitat": "Selvas tropicales",
+        "organizacion_social": "Colonia"
+      }
+    ],
+    "animales_domesticos": [
+      {
+        "nombre_cientifico": "Canis lupus familiaris",
+        "nombre_comun": "Perro doméstico",
+        "razas": ["Labrador", "Pastor Alemán", "Chihuahua"],
+        "esperanza_vida": 13,
+        "dieta": ["Omnívora"]
+      },
+      {
+        "nombre_cientifico": "Felis catus",
+        "nombre_comun": "Gato doméstico",
+        "razas": ["Siamés", "Persa", "Común europeo"],
+        "esperanza_vida": 15,
+        "dieta": ["Carnívora"]
+      }
+    ]
+  }

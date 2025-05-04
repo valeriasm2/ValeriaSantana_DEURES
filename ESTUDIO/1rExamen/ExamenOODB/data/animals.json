@@ -1,0 +1,121 @@
+{
+    "mamifers": [
+        {
+            "habitat": "Sabanes i zones semidesèrtiques d'Àfrica i una petita població a l'Índia",
+            "pes_mitja_kg": 190,
+            "ordre": "Carnivora",
+            "nom_comu": "Lleó",
+            "alimentacio": "Carnívor",
+            "esperanca_vida_anys": [
+                10,
+                14
+            ],
+            "nom_cientific": "Panthera leo",
+            "caracteristica_distintiva": "Gran crinera en mascles adults, caça en grup"
+        },
+        {
+            "habitat": "Oceans globals (migratòria)",
+            "pes_mitja_kg": 150000,
+            "ordre": "Cetacea",
+            "nom_comu": "Balena Blava",
+            "alimentacio": "Filtrador (principalment krill)",
+            "esperanca_vida_anys": [
+                80,
+                90
+            ],
+            "nom_cientific": "Balaenoptera musculus",
+            "caracteristica_distintiva": "L'animal més gran conegut que ha existit mai"
+        },
+        {
+            "habitat": "Selva tropical i sabana humida d'Àfrica central i occidental",
+            "pes_mitja_kg": 50,
+            "ordre": "Primates",
+            "nom_comu": "Ximpanzé Comú",
+            "alimentacio": "Omnívor (fruites, insectes, fulles, petits vertebrats)",
+            "esperanca_vida_anys": [
+                40,
+                50
+            ],
+            "nom_cientific": "Pan troglodytes",
+            "caracteristica_distintiva": "Alta intel·ligència, ús d'eines, estructura social complexa"
+        },
+        {
+            "habitat": "Zones àrides i semiàrides d'Austràlia",
+            "pes_mitja_kg": 70,
+            "ordre": "Diprotodontia",
+            "nom_comu": "Cangur Roig",
+            "alimentacio": "Herbivor (pastura)",
+            "esperanca_vida_anys": [
+                15,
+                20
+            ],
+            "nom_cientific": "Macropus rufus",
+            "caracteristica_distintiva": "Marsupi per a les cries, potents potes posteriors per saltar"
+        },
+        {
+            "habitat": "Boscos, muntanyes i tundra d'Euràsia i Amèrica del Nord",
+            "pes_mitja_kg": 250,
+            "ordre": "Carnivora",
+            "nom_comu": "Ós Bru",
+            "alimentacio": "Omnívor (baies, arrels, peix, insectes, petits i grans mamífers)",
+            "esperanca_vida_anys": [
+                20,
+                30
+            ],
+            "nom_cientific": "Ursus arctos",
+            "caracteristica_distintiva": "Gran mida, gepa muscular a l'espatlla, capacitat d'hibernar"
+        }
+    ],
+    "aus": [
+        {
+            "habitat": "Muntanyes, penya-segats i zones obertes de l'hemisferi nord",
+            "ordre": "Accipitriformes",
+            "migratoria": "No (majoritàriament resident)",
+            "nom_comu": "Àguila daurada",
+            "alimentacio": "Carnívor / Rapinyaire (mamífers mitjans, aus, rèptils)",
+            "nom_cientific": "Aquila chrysaetos",
+            "caracteristica_distintiva": "Gran envergadura, vol potent, vista molt aguda",
+            "envergadura_mitja_cm": 200
+        },
+        {
+            "habitat": "Sabanes i deserts d'Àfrica",
+            "ordre": "Struthioniformes",
+            "migratoria": "No",
+            "nom_comu": "Estruç Comú",
+            "alimentacio": "Omnívor (principalment plantes, també insectes i petits vertebrats)",
+            "nom_cientific": "Struthio camelus",
+            "caracteristica_distintiva": "Au més gran del món, no voladora, cames llargues i potents per córrer",
+            "envergadura_mitja_cm": 0
+        },
+        {
+            "habitat": "Antàrtida (gel marí i aigües)",
+            "ordre": "Sphenisciformes",
+            "migratoria": "Sí (moviments sobre el gel segons estació)",
+            "nom_comu": "Pingüí emperador",
+            "alimentacio": "Carnívor (peix, krill, calamars)",
+            "nom_cientific": "Aptenodytes forsteri",
+            "caracteristica_distintiva": "Adaptat al fred extrem, excel·lent nedador i bussejador, cria durant l'hivern antàrtic",
+            "envergadura_mitja_cm": 0
+        },
+        {
+            "habitat": "Diversos hàbitats a Amèrica (des de boscos fins a deserts)",
+            "ordre": "Apodiformes",
+            "migratoria": "Variable (algunes espècies són migratòries)",
+            "nom_comu": "Colibrí",
+            "alimentacio": "Nectarívor (principalment nèctar de flors), també insectes",
+            "nom_cientific": "Trochilidae (Família)",
+            "caracteristica_distintiva": "Mida molt petita, vol extremadament ràpid, capacitat de surar a l'aire",
+            "envergadura_mitja_cm": 10
+        },
+        {
+            "habitat": "Distribució cosmopolita (penya-segats, costes, muntanyes, fins i tot ciutats)",
+            "ordre": "Falconiformes",
+            "migratoria": "Parcialment (poblacions del nord migren al sud)",
+            "nom_comu": "Falcó pelegrí",
+            "alimentacio": "Carnívor / Ornitòfag (principalment altres aus caçades en vol)",
+            "nom_cientific": "Falco peregrinus",
+            "caracteristica_distintiva": "L'animal més ràpid del món en picat (més de 300 km/h)",
+            "envergadura_mitja_cm": 105
+        }
+    ]
+}

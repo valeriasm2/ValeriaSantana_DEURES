@@ -1,0 +1,113 @@
+{
+  "cantants": [
+    {
+      "nom_complet": "Elvis Aaron Presley",
+      "any_naixement": 1935,
+      "discs_aurats": "Molts (més de 100 segons RIAA als EUA)",
+      "pais_naixement": "Estats Units d'Amèrica",
+      "grup_principal": "Solitari"
+    },
+    {
+      "nom_complet": "Aretha Louise Franklin",
+      "any_naixement": 1942,
+      "discs_aurats": "Molts (aproximadament 18 àlbums/singles d'or als EUA)",
+      "pais_naixement": "Estats Units d'Amèrica",
+      "grup_principal": "Solitari"
+    },
+    {
+      "nom_complet": "Robert Allen Zimmerman (Bob Dylan)",
+      "any_naixement": 1941,
+      "discs_aurats": "Molts (més de 30 àlbums/singles d'or als EUA)",
+      "pais_naixement": "Estats Units d'Amèrica",
+      "grup_principal": "Solitari"
+    },
+    {
+      "nom_complet": "John Winston Ono Lennon",
+      "any_naixement": 1940,
+      "discs_aurats": "Molts (tant amb The Beatles com en solitari)",
+      "pais_naixement": "Regne Unit",
+      "grup_principal": "The Beatles / Solitari"
+    },
+    {
+      "nom_complet": "Marvin Pentz Gay Jr.",
+      "any_naixement": 1939,
+      "discs_aurats": "Diversos (ex: 'What's Going On', 'Let's Get It On')",
+      "pais_naixement": "Estats Units d'Amèrica",
+      "grup_principal": "Solitari"
+    }
+  ],
+  "esportistes": [
+    {
+      "nom_complet": "Edson Arantes do Nascimento (Pelé)",
+      "any_naixement": 1940,
+      "copes_mundials": 3,
+      "pais_naixement": "Brasil",
+      "equip_principal": "Santos FC / Selecció de Brasil"
+    },
+    {
+      "nom_complet": "Sir Robert Charlton (Bobby Charlton)",
+      "any_naixement": 1937,
+      "copes_mundials": 1,
+      "pais_naixement": "Anglaterra",
+      "equip_principal": "Manchester United / Selecció d'Anglaterra"
+    },
+    {
+      "nom_complet": "Franz Anton Beckenbauer",
+      "any_naixement": 1945,
+      "copes_mundials": 1,
+      "pais_naixement": "Alemanya",
+      "equip_principal": "Bayern de Múnic / Selecció d'Alemanya"
+    },
+    {
+      "nom_complet": "Manuel Francisco dos Santos (Garrincha)",
+      "any_naixement": 1933,
+      "copes_mundials": 2,
+      "pais_naixement": "Brasil",
+      "equip_principal": "Botafogo / Selecció de Brasil"
+    },
+    {
+      "nom_complet": "Hendrik Johannes Cruijff (Johan Cruyff)",
+      "any_naixement": 1947,
+      "copes_mundials": 0,
+      "pais_naixement": "Països Baixos",
+      "equip_principal": "AFC Ajax / FC Barcelona / Selecció dels Països Baixos"
+    }
+  ],
+  "cientifics": [
+    {
+      "nom_complet": "Francis Harry Compton Crick",
+      "any_naixement": 1916,
+      "nobels": 1,
+      "pais_naixement": "Regne Unit",
+      "universitat_principal": "MRC Laboratory of Molecular Biology (Cambridge)"
+    },
+    {
+      "nom_complet": "James Dewey Watson",
+      "any_naixement": 1928,
+      "nobels": 1,
+      "pais_naixement": "Estats Units d'Amèrica",
+      "universitat_principal": "Harvard University / Cold Spring Harbor Laboratory"
+    },
+    {
+      "nom_complet": "Linus Carl Pauling",
+      "any_naixement": 1901,
+      "nobels": 2,
+      "pais_naixement": "Estats Units d'Amèrica",
+      "universitat_principal": "California Institute of Technology (Caltech)"
+    },
+    {
+      "nom_complet": "Richard Phillips Feynman",
+      "any_naixement": 1918,
+      "nobels": 1,
+      "pais_naixement": "Estats Units d'Amèrica",
+      "universitat_principal": "California Institute of Technology (Caltech)"
+    },
+    {
+      "nom_complet": "Murray Gell-Mann",
+      "any_naixement": 1929,
+      "nobels": 1,
+      "pais_naixement": "Estats Units d'Amèrica",
+      "universitat_principal": "California Institute of Technology (Caltech)"
+    }
+  ]
+}
