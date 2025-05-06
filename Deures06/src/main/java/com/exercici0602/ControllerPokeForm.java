@@ -44,21 +44,20 @@ public class ControllerPokeForm implements Initializable {
 
     @FXML
     private TextField fieldAbility = new TextField();
-
+  
     @FXML
     private TextField fieldCategory = new TextField();
-
+    
     @FXML
     private ChoiceBox<String> choiceType = new ChoiceBox<String>();
-    final String pokemonTypes[] = { "Planta/Verí", "Foc", "Foc/Volador", "Aigua", "Insecte", "Insecte/Volador",
-            "Insecte/Verí", "Elèctric" };
-
+    final String pokemonTypes[] = {"Planta/Verí", "Foc", "Foc/Volador", "Aigua", "Insecte", "Insecte/Volador", "Insecte/Verí", "Elèctric"};
+  
     @FXML
     private TextField fieldHeight = new TextField();
-
+  
     @FXML
     private TextField fieldWeight = new TextField();
-
+  
     @FXML
     private ImageView imgBackArrow;
 
@@ -163,16 +162,15 @@ public class ControllerPokeForm implements Initializable {
         Stage stage = (Stage) buttonSelectFile.getScene().getWindow();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-        fileChooser.getExtensionFilters()
-                .add(new FileChooser.ExtensionFilter("Arxius d'imatge", "*.png", "*.jpg", "*.jpeg"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Arxius d'imatge", "*.png", "*.jpg", "*.jpeg"));
         File selectedFile = fileChooser.showOpenDialog(stage);
         if (selectedFile != null) {
             String fileName = selectedFile.getName();
-            String destination = System.getProperty("user.dir") + "./data/pokeImages/" + fileName;
+            String destination = System.getProperty("user.dir") + "/data/pokeImages/" + fileName;
             File destinationFile = new File(destination);
             try {
                 Files.copy(selectedFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                this.imagePath = "./data/pokeImages/" + fileName;
+                this.imagePath = "data/pokeImages/" + fileName;
 
                 File file = new File(this.imagePath);
                 Image image = new Image(file.toURI().toString());
@@ -195,9 +193,7 @@ public class ControllerPokeForm implements Initializable {
         String image = this.imagePath;
 
         AppData db = AppData.getInstance();
-        String sql = String.format(
-                "INSERT INTO pokemons (name, type, ability, height, weight, category, image) VALUES ('%s','%s','%s','%s','%s','%s','%s')",
-                name, type, ability, height, weight, category, image);
+        String sql = String.format("INSERT INTO pokemons (name, type, ability, height, weight, category, image) VALUES ('%s','%s','%s','%s','%s','%s','%s')", name, type, ability, height, weight, category, image);
         db.update(sql);
 
         setStatus(STATUS_ADD, -1);
@@ -219,9 +215,7 @@ public class ControllerPokeForm implements Initializable {
         String image = this.imagePath;
 
         AppData db = AppData.getInstance();
-        String sql = String.format(
-                "UPDATE pokemons SET name = '%s', type = '%s', ability = '%s', height = '%s', weight = '%s', category = '%s', image = '%s' WHERE number = '%d'",
-                name, type, ability, height, weight, category, image, this.number);
+        String sql = String.format("UPDATE pokemons SET name = '%s', type = '%s', ability = '%s', height = '%s', weight = '%s', category = '%s', image = '%s' WHERE number = '%d'", name, type, ability, height, weight, category, image, this.number);
         db.update(sql);
 
         labelSaved.setVisible(true);
@@ -229,18 +223,19 @@ public class ControllerPokeForm implements Initializable {
             labelSaved.setVisible(false);
         });
     }
-
+    
     private void setTimeout(int milliseconds, Runnable task) {
         Timer timer = new Timer();
         timer.schedule(
-                new TimerTask() {
-                    @Override
-                    public void run() {
-                        task.run();
-                    }
-                }, milliseconds);
+            new TimerTask() {
+                @Override
+                public void run() {
+                    task.run();
+                }
+            }, milliseconds
+        );
     }
-
+    
     @FXML
     public void delete(ActionEvent event) {
         AppData db = AppData.getInstance();
